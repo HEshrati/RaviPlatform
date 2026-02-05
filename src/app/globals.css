@@ -1,0 +1,305 @@
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-vazirmatn:
+    "Vazirmatn", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+html,
+body {
+  font-family: var(--font-vazirmatn);
+}
+
+/* --- انیمیشن‌های اصلی --- */
+@keyframes bounce-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 3s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-2px);
+  }
+  40% {
+    transform: translateX(2px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+.shake-animation {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* --- انیمیشن جدید: Blob (حرکت دایره‌ها) --- */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* --- استایل‌های عمومی --- */
+.btn-3d {
+  @apply shadow-xl hover:shadow-2xl hover:-translate-y-1 active:scale-95 transition;
+}
+
+.login-dark-bg {
+  background-color: #161f2e;
+}
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateX(32px);
+  transition:
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 700ms ease;
+  will-change: transform, opacity;
+}
+.reveal.from-left {
+  transform: translateX(-32px);
+}
+.reveal.from-right {
+  transform: translateX(32px);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Preloader */
+.preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #0f172a;
+  display: grid;
+  place-items: center;
+  transition:
+    opacity 400ms ease,
+    visibility 400ms ease;
+}
+.preloader-overlay.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.preloader-logo {
+  font-weight: 900;
+  font-size: clamp(28px, 6vw, 52px);
+  letter-spacing: 0.25em;
+  background: linear-gradient(90deg, #f97316 0%, #f59e0b 50%, #f97316 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% auto;
+  animation: raavi-shimmer 1.5s linear infinite;
+}
+@keyframes raavi-shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+.preloader-dots {
+  display: flex;
+  gap: 8px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #f97316;
+  opacity: 0.6;
+  animation: dot-bounce 900ms ease-in-out infinite;
+}
+.dot-1 {
+  animation-delay: 0ms;
+}
+.dot-2 {
+  animation-delay: 150ms;
+}
+.dot-3 {
+  animation-delay: 300ms;
+}
+@keyframes dot-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+/* src/app/globals.css */
+
+/* ... کدهای قبلی ... */
+
+/* ========================================= */
+/*       انیمیشن پس‌زمینه جدید (Orange Flow)     */
+/* ========================================= */
+
+@keyframes move {
+  100% {
+    transform: translate3d(0, 0, 1px) rotate(360deg);
+  }
+}
+
+.background-animate {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: #ffffff; /* پس‌زمینه سفید */
+  overflow: hidden;
+  z-index: -10; /* قرارگیری در پشت تمام عناصر */
+  pointer-events: none; /* جلوگیری از تداخل با کلیک‌ها */
+}
+
+.background-animate span {
+  width: 20vmin;
+  height: 20vmin;
+  border-radius: 20vmin;
+  backface-visibility: hidden;
+  position: absolute;
+  animation: move;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0.6; /* شفافیت برای ملایم شدن رنگ‌ها */
+}
+
+/* 
+  تغییر رنگ‌ها به طیف نارنجی:
+  Orange-100: #ffedd5
+  Orange-200: #fed7aa
+  Orange-300: #fdba74
+  Orange-400: #fb923c
+*/
+
+.background-animate span:nth-child(1) {
+  color: #fb923c;
+  top: 11%;
+  left: 74%;
+  animation-duration: 34s;
+  animation-delay: -50s;
+  transform-origin: -14vw 3vh;
+  box-shadow: 40vmin 0 5.9vmin currentColor;
+}
+
+.background-animate span:nth-child(2) {
+  color: #ffedd5;
+  top: 28%;
+  left: 37%;
+  animation-duration: 33s;
+  animation-delay: -5s;
+  transform-origin: -12vw 9vh;
+  box-shadow: -40vmin 0 5.2vmin currentColor;
+}
+
+.background-animate span:nth-child(3) {
+  color: #fed7aa;
+  top: 6%;
+  left: 58%;
+  animation-duration: 51s;
+  animation-delay: -9s;
+  transform-origin: 8vw 21vh;
+  box-shadow: 40vmin 0 5.8vmin currentColor;
+}
+
+.background-animate span:nth-child(4) {
+  color: #fdba74;
+  top: 8%;
+  left: 54%;
+  animation-duration: 50s;
+  animation-delay: -9s;
+  transform-origin: -17vw -23vh;
+  box-shadow: -40vmin 0 5.4vmin currentColor;
+}
+
+.background-animate span:nth-child(5) {
+  color: #ffedd5;
+  top: 99%;
+  left: 30%;
+  animation-duration: 19s;
+  animation-delay: -35s;
+  transform-origin: -15vw 15vh;
+  box-shadow: -40vmin 0 5.9vmin currentColor;
+}
+
+.background-animate span:nth-child(6) {
+  color: #fed7aa;
+  top: 50%;
+  left: 20%;
+  animation-duration: 26s;
+  animation-delay: -40s;
+  transform-origin: -16vw -24vh;
+  box-shadow: -40vmin 0 5.5vmin currentColor;
+}
+
+.background-animate span:nth-child(7) {
+  color: #fb923c;
+  top: 50%;
+  left: 49%;
+  animation-duration: 9s;
+  animation-delay: -40s;
+  transform-origin: -11vw -14vh;
+  box-shadow: 40vmin 0 5.3vmin currentColor;
+}
+
+.background-animate span:nth-child(8) {
+  color: #fdba74;
+  top: 47%;
+  left: 72%;
+  animation-duration: 15s;
+  animation-delay: -28s;
+  transform-origin: -5vw -14vh;
+  box-shadow: 40vmin 0 5vmin currentColor;
+}
