@@ -87,7 +87,11 @@ function CompleteProfileContent() {
         <div className="flex items-center gap-3 mb-6">
           <span className="w-2 h-8 bg-orange-500 rounded-full inline-block"></span>
           <h3 className="font-black text-xl text-slate-800">
-            تست روانشناسی تط‌نشین!testCompleted ? (
+            تست روانشناسی تطبیق
+          </h3>
+        </div>
+
+        {!testCompleted ? (
           <div>
             <p className="text-slate-600 mb-6 text-sm leading-relaxed">
               برای یافتن بهترین هم‌نشین، باید تست روانشناسی را تکمیل کنید. این
