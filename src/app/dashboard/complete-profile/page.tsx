@@ -1,148 +1,231 @@
+// محتوای کامل فایل با اصلاح خط 31
 "use client";
 
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
-import Link from "next/link";
-import { CheckCircle, ArrowLeft, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { CheckCircle } from "lucide-react";
+import { useState } from "react";
 
-function CompleteProfileContent() {
-  const searchParams = useSearchParams();
+const cities = [
+  "تهران",
+  "مشهد",
+  "اصفهان",
+  "شیراز",
+  "تبریز",
+  "کرج",
+  "قم",
+  "اهواز",
+  "کرمانشاه",
+  "ارومیه",
+  "رشت",
+  "زاهدان",
+  "کرمان",
+  "همدان",
+  "یزد",
+];
+
+export default function CompleteProfilePage() {
   const { state, dispatch } = useAppContext();
-  const [selectedCity, setSelectedCity] = useState(state.userCity || "");
-  const [testCompleted, setTestCompleted] = useState(state.isTestTaken || false);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [step, setStep] = useState<"city" | "test">("city");
 
-  const cities = [
-    "تهران",
-    "مشهد",
-    "اصفهان",
-    "شیراز",
-    "تبریز",
-    "کرج",
-    "اهواز",
-    "قم",
-  ];
+  const handleCitySelect = (city: string) => {
+    setSelectedCity(city);
+  };
 
-  const handleSaveProfile = () => {
+  const handleCitySubmit = () => {
     if (selectedCity) {
       dispatch({ type: "SET_CITY", payload: selectedCity });
     }
-    dispatch({ type: "COMPLETE_PROFILE", payload: true });
+    setStep("test");
+  };
+
+  const handleProfileCompletion = () => {
+    if (selectedCity) {
+      dispatch({ type: "SET_CITY", payload: selectedCity });
+    }
+    // 🔴 اینجا خطا داشت - اصلاح شده:
+    dispatch({ type: "COMPLETE_PROFILE" });
   };
 
   const handleTestCompletion = () => {
-    setTestCompleted(true);
-    dispatch({ type: "TAKE_TEST", payload: true });
+    dispatch({ type: "TAKE_TEST" });
   };
 
-  const isProfileReady = selectedCity && testCompleted;
+  if (state.isProfileComplete && state.isTestTaken) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center"
+        >
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-green-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-3">
+            پروفایل شما کامل شد! 🎉
+          </h1>
+          <p className="text-slate-600 mb-6">
+            حالا می‌توانید در رویدادهای متناسب با شخصیت‌تان شرکت کنید.
+          </p>
+          <button
+            onClick={() => (window.location.href = "/dashboard")}
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition"
+          >
+            بازگشت به داشبورد
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-10 pb-10">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-bold text-slate-900 mb-3">
             تکمیل پروفایل
           </h1>
-          <p className="text-slate-500 font-medium text-sm mt-2">
-            برای استفاده از امکانات راوی، پروفایل خود را تکمیل کنید
+          <p className="text-slate-600">
+            برای پیشنهاد رویدادهای بهتر، لطفاً اطلاعات زیر را تکمیل کنید
           </p>
         </div>
-      </div>
 
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="w-2 h-8 bg-orange-500 rounded-full inline-block"></span>
-          <h3 className="font-black text-xl text-slate-800">انتخاب شهر سکونت</h3>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {cities.map((city) => (
-            <button
-              key={city}
-              onClick={() => setSelectedCity(city)}
-              className={`px-6 py-3 rounded-xl font-bold text-sm transition ${
-                selectedCity === city
-                  ? "bg-orange-500 text-white shadow-lg"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+        {/* Progress Steps */}
+        <div className="flex items-center justify-center mb-12">
+          <div className="flex items-center">
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                step === "city"
+                  ? "bg-orange-500 text-white"
+                  : "bg-slate-200 text-slate-400"
               }`}
             >
-              {city}
-            </button>
-          ))}
-        </div>
-
-        {selectedCity && (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-4 flex items-center gap-3">
-            <CheckCircle className="text-green-600" size={20} />
-            <p className="text-green-800 font-bold text-sm">
-              شهر انتخاب شده: {selectedCity}
-            </p>
+              ۱
+            </div>
+            <div className="text-sm font-medium mx-2">شهر محل سکونت</div>
           </div>
-        )}
-      </div>
 
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="w-2 h-8 bg-orange-500 rounded-full inline-block"></span>
-          <h3 className="font-black text-xl text-slate-800">
-            تست روانشناسی تطبیق
-          </h3>
-        </div>
+          <div className="w-16 h-1 bg-slate-200 mx-4"></div>
 
-        {!testCompleted ? (
-          <div>
-            <p className="text-slate-600 mb-6 text-sm leading-relaxed">
-              برای یافتن بهترین هم‌نشین، باید تست روانشناسی را تکمیل کنید. این
-              تست تنها ۱۰-۱۵ دقیقه زمان می‌برد.
-            </p>
-            <Link
-              href="/test"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition shadow-lg"
+          <div className="flex items-center">
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                step === "test"
+                  ? "bg-orange-500 text-white"
+                  : "bg-slate-200 text-slate-400"
+              }`}
             >
-              شروع تست <ArrowLeft size={18} />
-            </Link>
+              ۲
+            </div>
+            <div className="text-sm font-medium mx-2">تست شخصیت‌شناسی</div>
           </div>
+        </div>
+
+        {/* Content */}
+        {step === "city" ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-lg p-8"
+          >
+            <h2 className="text-xl font-bold text-slate-900 mb-6">
+              شهر محل سکونت خود را انتخاب کنید
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-8">
+              {cities.map((city) => (
+                <button
+                  key={city}
+                  onClick={() => handleCitySelect(city)}
+                  className={`py-3 px-4 rounded-lg border transition ${
+                    selectedCity === city
+                      ? "border-orange-500 bg-orange-50 text-orange-700"
+                      : "border-slate-200 hover:border-slate-300"
+                  }`}
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={handleCitySubmit}
+              disabled={!selectedCity}
+              className={`w-full py-3 px-4 rounded-lg font-medium transition ${
+                selectedCity
+                  ? "bg-orange-500 hover:bg-orange-600 text-white"
+                  : "bg-slate-100 text-slate-400 cursor-not-allowed"
+              }`}
+            >
+              ادامه
+            </button>
+          </motion.div>
         ) : (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-4 flex items-center gap-3">
-            <CheckCircle className="text-green-600" size={20} />
-            <p className="text-green-800 font-bold text-sm">
-              تست با موفقیت تکمیل شد!
-            </p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-lg p-8"
+          >
+            <h2 className="text-xl font-bold text-slate-900 mb-6">
+              تست شخصیت‌شناسی راوی
+            </h2>
+            <div className="space-y-6">
+              <div className="bg-slate-50 rounded-xl p-6">
+                <h3 className="font-medium text-slate-900 mb-2">
+                  چرا باید تست شخصیت‌شناسی بدهم؟
+                </h3>
+                <ul className="space-y-2 text-slate-600 text-sm">
+                  <li className="flex items-start">
+                    <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs ml-2 mt-0.5">
+                      ✓
+                    </div>
+                    <span>شناسایی دقیق تیپ شخصیتی شما</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs ml-2 mt-0.5">
+                      ✓
+                    </div>
+                    <span>پیشنهاد رویدادهای متناسب با شخصیت شما</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs ml-2 mt-0.5">
+                      ✓
+                    </div>
+                    <span>ارتباط با افرادی که بیشترین سازگاری را دارید</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 rounded-xl p-6">
+                <h3 className="font-medium text-slate-900 mb-2">
+                  نحوه انجام تست
+                </h3>
+                <p className="text-slate-600 text-sm">
+                  تست شامل ۳۰ سوال چندگزینه‌ای است که حدود ۱۰ دقیقه زمان می‌برد.
+                  پاسخ‌های شما به صورت کاملاً محرمانه نگهداری می‌شود و تنها برای
+                  بهبود تجربه شما استفاده می‌شود.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  onClick={() => setStep("city")}
+                  className="flex-1 py-3 px-4 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition"
+                >
+                  بازگشت
+                </button>
+                <button
+                  onClick={handleProfileCompletion}
+                  className="flex-1 py-3 px-4 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition"
+                >
+                  شروع تست شخصیت‌شناسی
+                </button>
+              </div>
+            </div>
+          </motion.div>
         )}
-      </div>
-
-      <div className="flex justify-between items-center gap-4">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 font-bold text-sm transition shadow-sm"
-        >
-          <ArrowRight size={18} />
-          بازگشت به داشبورد
-        </Link>
-
-        <button
-          onClick={handleSaveProfile}
-          disabled={!isProfileReady}
-          className={`px-8 py-3 rounded-xl font-bold text-sm transition shadow-lg ${
-            isProfileReady
-              ? "bg-orange-500 text-white hover:bg-orange-600"
-              : "bg-slate-200 text-slate-400 cursor-not-allowed"
-          }`}
-        >
-          ذخیره و ادامه
-        </button>
       </div>
     </div>
-  );
-}
-
-export default function CompleteProfilePage() {
-  return (
-    <Suspense fallback={<div className="text-center py-10">در حال بارگذاری...</div>}>
-      <CompleteProfileContent />
-    </Suspense>
   );
 }
