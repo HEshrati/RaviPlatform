@@ -41,7 +41,8 @@ const nextConfig = {
   // فعال کردن compression برای بهبود performance
   compress: true,
   // تنظیمات برای استاتیک
-  trailingSlash: true,
+  trailingSlash: false,
+  
 }
 
 module.exports = nextConfig
