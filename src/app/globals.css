@@ -30,7 +30,6 @@ body {
 /* رفع مشکل direction در عناصر خاص */
 [dir="rtl"] * {
   direction: rtl;
-  text-align: right;
 }
 
 /* رفع مشکل اعداد فارسی */
