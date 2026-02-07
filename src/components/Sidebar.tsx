@@ -10,117 +10,86 @@ import {
   Zap,
 } from "lucide-react";
 
-interface SidebarProps {
-  isMobile?: boolean;
-  onClose?: () => void;
-}
-
-export default function Sidebar({ isMobile = false, onClose }: SidebarProps) {
+export default function Sidebar() {
   const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
-  const handleClick = () => {
-    if (onClose) {
-      onClose();
-    }
-  };
+  const menuItems = [
+    { name: "داشبورد", icon: LayoutDashboard, path: "/dashboard" },
+    { name: "کاوش رویدادها", icon: Compass, path: "/events" },
+    { name: "چت‌ها", icon: MessageSquare, path: "/chat" },
+    { name: "پروفایل کاربری", icon: User, path: "/dashboard/profile" },
+  ];
 
   return (
-    <div className="w-full h-full bg-slate-900 text-white flex flex-col">
-      {/* TEST Header - باکس نارنجی برای اطمینان از render شدن */}
-      <div className="w-full h-20 bg-orange-500 flex items-center justify-center shrink-0">
-        <h1 className="text-2xl font-bold">RAAVI MENU</h1>
+    <aside className="w-72 bg-[#111827] text-white hidden md:flex flex-col h-full shrink-0 border-l border-slate-800 overflow-y-auto font-sans">
+      {/* هدر سایدبار با لینک به صفحه اصلی */}
+      <div className="p-6 border-b border-slate-800">
+        <Link href="/" className="flex items-center gap-3 group">
+          {/* لوگو با انیمیشن هاور */}
+          <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-amber-400 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20 group-hover:shadow-orange-500/40 transition-all duration-300">
+            <Zap size={22} className="text-white" fill="currentColor" />
+          </div>
+          {/* اسم راوی با لینک */}
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400 tracking-tighter group-hover:from-orange-300 group-hover:to-amber-300 transition-all">
+              RAAVI
+            </h2>
+            <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">
+              صفحه اصلی
+            </span>
+          </div>
+        </Link>
       </div>
 
-      {/* Logo Header */}
-      <div className="p-6 bg-slate-800 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-            <Zap size={22} className="text-white" fill="white" />
+      {/* منوی اصلی */}
+      <nav className="flex-1 p-4 space-y-2">
+        {/* گزینه بازگشت به صفحه اصلی - بدون آیکون */}
+        {!isHomePage && (
+          <Link
+            href="/"
+            className="flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white text-center"
+          >
+            <span className="text-sm">بازگشت به صفحه اصلی</span>
+          </Link>
+        )}
+
+        {menuItems.map((item) => {
+          const isActive = pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group ${
+                isActive
+                  ? "bg-orange-500 shadow-lg shadow-orange-900/40 text-white font-bold"
+                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-200 font-medium"
+              }`}
+            >
+              <item.icon
+                size={22}
+                className={`transition-colors ${isActive ? "text-white" : "group-hover:text-orange-400"}`}
+              />
+              <span className="text-sm">{item.name}</span>
+            </Link>
+          );
+        })}
+
+        {/* بخش پیشنهادی */}
+        <div className="mt-8 px-4">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 border border-slate-700 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-amber-500"></div>
+            <Zap size={24} className="text-amber-400 mb-3" />
+            <p className="text-sm font-bold text-white mb-1">پیشنهاد ویژه</p>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+              کارگاه ویژه تیم‌سازی اصفهان با ۵۰٪ تخفیف
+            </p>
+            <button className="w-full py-2 bg-white text-slate-900 text-xs font-black rounded-lg hover:bg-orange-50 hover:text-orange-600 transition shadow-md">
+              مشاهده پیشنهاد
+            </button>
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">راوی</h2>
-            <span className="text-xs text-slate-400">RAAVI Platform</span>
-          </div>
         </div>
-      </div>
-
-      {/* Menu Items */}
-      <div className="flex-1 p-4 overflow-y-auto">
-        <div className="space-y-2">
-          <Link
-            href="/dashboard"
-            onClick={handleClick}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
-              pathname === "/dashboard"
-                ? "bg-orange-500 text-white font-bold"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-            }`}
-          >
-            <LayoutDashboard size={20} />
-            <span className="text-sm">داشبورد</span>
-          </Link>
-
-          <Link
-            href="/events"
-            onClick={handleClick}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
-              pathname === "/events"
-                ? "bg-orange-500 text-white font-bold"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-            }`}
-          >
-            <Compass size={20} />
-            <span className="text-sm">کاوش رویدادها</span>
-          </Link>
-
-          <Link
-            href="/chat"
-            onClick={handleClick}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
-              pathname === "/chat"
-                ? "bg-orange-500 text-white font-bold"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-            }`}
-          >
-            <MessageSquare size={20} />
-            <span className="text-sm">چت‌ها</span>
-          </Link>
-
-          <Link
-            href="/dashboard/profile"
-            onClick={handleClick}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
-              pathname === "/dashboard/profile"
-                ? "bg-orange-500 text-white font-bold"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-            }`}
-          >
-            <User size={20} />
-            <span className="text-sm">پروفایل کاربری</span>
-          </Link>
-        </div>
-
-        {/* Success Box */}
-        <div className="mt-8 p-4 bg-green-500 rounded-lg">
-          <p className="text-white text-sm font-bold">
-            ✅ Sidebar کار می‌کند!
-          </p>
-        </div>
-
-        {/* Offer Box */}
-        <div className="mt-4 p-4 bg-slate-800 rounded-lg">
-          <div className="flex items-center gap-2 mb-2">
-            <Zap size={20} className="text-yellow-400" />
-            <span className="text-sm font-bold">پیشنهاد ویژه</span>
-          </div>
-          <p className="text-xs text-slate-400 mb-3">
-            کارگاه ویژه تیم‌سازی اصفهان با ۵۰٪ تخفیف
-          </p>
-          <button className="w-full py-2 bg-white text-slate-900 text-xs font-bold rounded-lg hover:bg-orange-50 hover:text-orange-600">
-            مشاهده پیشنهاد
-          </button>
-        </div>
-      </div>
-    </div>
+      </nav>
+    </aside>
   );
 }

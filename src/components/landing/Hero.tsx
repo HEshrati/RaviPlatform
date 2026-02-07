@@ -40,7 +40,7 @@ export default function Hero({ ctaHref }: HeroProps) {
           <div className="flex flex-col sm:flex-row gap-4 items-center lg:items-start">
             <Link href={ctaHref} className="w-full sm:w-auto">
               <button className="w-full sm:w-auto bg-orange-500 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-bold text-sm md:text-base hover:bg-orange-600 transition shadow-xl shadow-orange-200/50 hover:-translate-y-1">
-                رایگان شروع کنید
+                شروع رایگان کنید
               </button>
             </Link>
             <Link href="/events" className="w-full sm:w-auto">
@@ -69,7 +69,7 @@ export default function Hero({ ctaHref }: HeroProps) {
         {/* Image Side */}
         <Reveal direction="left" className="order-1 lg:order-2">
           <div className="relative">
-            <div className="aspect-[4/3] md:aspect-auto md:h-[500px] lg:h-[600px] rounded-[30px] md:rounded-[40px] overflow-hidden shadow-2xl shadow-orange-200/30 border-4 border-white/90 backdrop-blur-sm">
+            <div className="aspect-square md:aspect-auto md:h-[500px] lg:h-[600px] rounded-[30px] md:rounded-[40px] overflow-hidden shadow-2xl shadow-orange-200/30 border-4 border-white/90 backdrop-blur-sm">
               <img
                 src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1000&q=80"
                 alt="گروهی از افراد در حال گفتگو و تعامل در یک محیط دوستانه"

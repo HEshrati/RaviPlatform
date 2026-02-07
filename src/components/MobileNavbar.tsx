@@ -16,7 +16,7 @@ export default function MobileNavbar() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden p-4">
+    <div className="fixed bottom-4 left-4 right-4 z-50 md:hidden">
       <div className="bg-slate-900/95 backdrop-blur-md text-slate-400 rounded-2xl shadow-2xl shadow-slate-900/50 border border-slate-700/50 flex justify-between items-center px-4 py-3">
         {navItems.map((item) => {
           const isActive =

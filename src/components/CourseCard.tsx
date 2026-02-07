@@ -44,7 +44,7 @@ export default function CourseCard({
 
         {/* بج‌ها */}
         <div className="absolute top-3 right-3 flex gap-2">
-          <div className="bg-white/90 backdrop-blur-md text-slate-800 text-xs font-bold px-2.5 py-1.5 rounded-lg shadow-sm flex items-center gap-1">
+          <div className="bg-white/90 backdrop-blur-md text-slate-800 text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1">
             <Star size={10} className="text-yellow-500 fill-yellow-500" />
             <span>{rating}</span>
           </div>
