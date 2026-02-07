@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Vazirmatn } from "next/font/google"; // <--- ایمپورت فونت وزیر
+import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
 import ClientShell from "@/components/ClientShell";
@@ -8,18 +7,8 @@ import ClientShell from "@/components/ClientShell";
 // تنظیمات فونت وزیرمتن (دانلود خودکار از گوگل)
 const vazirmatn = Vazirmatn({
   subsets: ["arabic", "latin"],
-  variable: "--font-vazirmatn", // نام متغیر برای استفاده در CSS
+  variable: "--font-vazirmatn",
   display: "swap",
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -35,8 +24,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body
-        // اضافه کردن کلاس متغیر وزیرمتن به بادی
-        className={`${geistSans.variable} ${geistMono.variable} ${vazirmatn.variable} antialiased bg-white text-slate-900 font-sans`}
+        className={`${vazirmatn.variable} antialiased bg-white text-slate-900 font-sans`}
       >
         <AppProvider>
           <ClientShell>{children}</ClientShell>
