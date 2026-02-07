@@ -30,19 +30,22 @@ export default function DashboardLayout({
         />
       )}
 
-      {/* سایدبار موبایل */}
+      {/* سایدبار موبایل - اصلاح شده */}
       <div
-        className={`fixed inset-y-0 right-0 w-72 bg-slate-900 z-50 transition-transform duration-300 lg:hidden ${
+        className={`fixed inset-y-0 right-0 w-72 z-50 transition-transform duration-300 lg:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
+        {/* دکمه بستن */}
         <button
           onClick={() => setIsMobileMenuOpen(false)}
-          className="absolute top-4 left-4 text-white hover:text-orange-500 transition"
+          className="absolute top-4 left-4 z-[60] text-white hover:text-orange-500 transition bg-slate-800 rounded-full p-2"
         >
-          <X size={24} />
+          <X size={20} />
         </button>
-        <div className="pt-16">
+        
+        {/* Sidebar با ارتفاع کامل */}
+        <div className="h-full">
           <Sidebar isMobile={true} />
         </div>
       </div>
@@ -50,7 +53,7 @@ export default function DashboardLayout({
       {/* محتوای اصلی */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* هدر موبایل */}
-        <header className="lg:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shrink-0">
+        <header className="lg:hidden h-14 md:h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
