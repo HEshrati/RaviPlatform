@@ -1,45 +1,42 @@
-// src/app/post-payment/page.tsx
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
 
-export default function PostPaymentPage() {
+// کامپوننت جداگانه برای استفاده از useSearchParams
+function PostPaymentContent() {
+  const searchParams = useSearchParams();
+  const { dispatch } = useAppContext();
   const router = useRouter();
-  const search = useSearchParams();
-  const eventId = search.get("eventId") || "next";
 
-  const openTelegram = () => {
-    // لینک کانال/گروه تلگرام واقعی را اینجا قرار دهید
-    window.location.href = "https://t.me/your_channel_link";
-  };
-
-  const openSiteChat = () => {
-    router.push(`/chat?eventId=${eventId}`);
-  };
+  useEffect(() => {
+    const status = searchParams.get("status");
+    if (status === "success") {
+      dispatch({ type: "SET_PAYMENT_SUCCESS", payload: true });
+      setTimeout(() => {
+        router.push("/payment-success");
+      }, 1000);
+    }
+  }, [searchParams, dispatch, router]);
 
   return (
-    <div className="min-h-screen bg-white px-6 py-10">
-      <div className="max-w-xl mx-auto border border-slate-200 rounded-2xl p-6">
-        <h1 className="text-xl font-black mb-4">نحوه تعامل را انتخاب کنید</h1>
-        <p className="text-slate-600 mb-6">
-          می‌خواهید وارد کانال تلگرام شوید یا در گروه این ایونت در داخل سایت چت
-          کنید؟
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button
-            onClick={openTelegram}
-            className="bg-slate-900 text-white rounded-xl py-4 font-bold hover:bg-slate-800 transition"
-          >
-            ورود به تلگرام
-          </button>
-          <button
-            onClick={openSiteChat}
-            className="bg-orange-500 text-white rounded-xl py-4 font-bold hover:bg-orange-600 transition"
-          >
-            چت داخل سایت
-          </button>
-        </div>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-4"></div>
+        <p className="text-slate-600 font-bold">در حال پردازش پرداخت...</p>
       </div>
     </div>
+  );
+}
+
+// کامپوننت اصلی با Suspense
+export default function PostPaymentPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-10">در حال بارگذاری...</div>}>
+      <PostPaymentContent />
+    </Suspense>
   );
 }
