@@ -1,4 +1,3 @@
-// محتوای کامل فایل با اصلاح خط 31
 "use client";
 
 import { useAppContext } from "@/context/AppContext";
@@ -44,7 +43,7 @@ export default function CompleteProfilePage() {
     if (selectedCity) {
       dispatch({ type: "SET_CITY", payload: selectedCity });
     }
-    // 🔴 اینجا خطا داشت - اصلاح شده:
+    // ✅ اصلاح شده: بدون payload
     dispatch({ type: "COMPLETE_PROFILE" });
   };
 
