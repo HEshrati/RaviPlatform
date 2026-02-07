@@ -7,14 +7,10 @@ import {
   Search,
   MoreVertical,
   Phone,
-  Video,
   ArrowRight,
   Hash,
-  Users,
-  ArrowLeft,
 } from "lucide-react";
 
-// ... (Type definitions remains the same - کدهای تایپ را نگه دارید)
 type Message = {
   id: number;
   text: string;
@@ -22,6 +18,7 @@ type Message = {
   isMe: boolean;
   senderName?: string;
 };
+
 type ChatRoom = {
   id: number;
   name: string;
@@ -33,25 +30,53 @@ type ChatRoom = {
 };
 
 export default function ChatPage() {
-  // ... (Data definitions remains the same - دیتای چت‌ها را نگه دارید)
   const [chats, setChats] = useState<ChatRoom[]>([
-    // ... دیتای خود را اینجا بگذارید
     {
       id: 1,
       name: "رویداد استارتاپی",
       type: "group",
       avatarColor: "bg-orange-500",
-      lastMessage: "سلام...",
+      lastMessage: "سلام همه!",
       unreadCount: 3,
-      messages: [],
+      messages: [
+        {
+          id: 1,
+          text: "سلام بچه‌ها! این رویداد عالی بود",
+          time: "10:30",
+          isMe: false,
+          senderName: "علی",
+        },
+        {
+          id: 2,
+          text: "واقعاً لذت بردم",
+          time: "10:32",
+          isMe: true,
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: "گروه طراحی UI/UX",
+      type: "group",
+      avatarColor: "bg-blue-500",
+      lastMessage: "فایل ارسال شد",
+      unreadCount: 0,
+      messages: [
+        {
+          id: 1,
+          text: "پروژه جدید رو کی شروع می‌کنیم؟",
+          time: "09:15",
+          isMe: false,
+          senderName: "سارا",
+        },
+      ],
     },
   ]);
 
-  const [selectedChatId, setSelectedChatId] = useState<number | null>(null); // در ابتدا هیچ چتی انتخاب نشده (مخصوصا برای موبایل)
+  const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // منطق: اگر در دسکتاپ هستیم، اولین چت را پیش‌فرض انتخاب کن
   useEffect(() => {
     if (
       window.innerWidth >= 768 &&
@@ -60,7 +85,7 @@ export default function ChatPage() {
     ) {
       setSelectedChatId(chats[0].id);
     }
-  }, []);
+  }, [chats]);
 
   const activeChat = chats.find((c) => c.id === selectedChatId);
 
@@ -69,24 +94,47 @@ export default function ChatPage() {
   }, [activeChat?.messages]);
 
   const handleSendMessage = () => {
-    /* ... کدهای ارسال پیام شما ... */
+    if (!inputValue.trim() || !selectedChatId) return;
+
+    const newMessage: Message = {
+      id: Date.now(),
+      text: inputValue,
+      time: new Date().toLocaleTimeString("fa-IR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      isMe: true,
+    };
+
+    setChats((prev) =>
+      prev.map((chat) =>
+        chat.id === selectedChatId
+          ? {
+              ...chat,
+              messages: [...chat.messages, newMessage],
+              lastMessage: inputValue,
+            }
+          : chat,
+      ),
+    );
+
+    setInputValue("");
   };
 
   return (
     <div
-      className="flex h-[calc(100vh-theme(spacing.20))] md:h-screen bg-slate-100 overflow-hidden font-sans text-slate-900"
+      className="flex h-screen bg-slate-100 overflow-hidden w-full"
       dir="rtl"
     >
-      {/* -------------------- سایدبار (لیست چت‌ها) -------------------- */}
-      {/* در موبایل: اگر چتی انتخاب شده باشد، این بخش مخفی می‌شود */}
+      {/* سایدبار لیست چت‌ها */}
       <aside
         className={`
-        w-full md:w-80 bg-[#111827] text-white flex-col border-l border-slate-700 shrink-0
-        ${selectedChatId !== null ? "hidden md:flex" : "flex"} 
+        w-full md:w-80 bg-[#111827] text-white flex-col border-l border-slate-700 shrink-0 h-screen
+        ${selectedChatId !== null ? "hidden md:flex" : "flex"}
       `}
       >
         {/* هدر سایدبار */}
-        <div className="p-4 border-b border-slate-800">
+        <div className="p-4 border-b border-slate-800 shrink-0">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-black tracking-tight">
               پیام‌رسان راوی
@@ -98,7 +146,6 @@ export default function ChatPage() {
               <ArrowRight size={18} />
             </Link>
           </div>
-          {/* سرچ باکس */}
           <div className="relative">
             <Search
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
@@ -153,16 +200,17 @@ export default function ChatPage() {
         </div>
       </aside>
 
-      {/* -------------------- صفحه چت -------------------- */}
-      {/* در موبایل: فقط اگر چتی انتخاب شده باشد نمایش داده می‌شود */}
+      {/* صفحه چت */}
       <main
-        className={`flex-1 flex-col bg-[#F3F4F6] relative ${selectedChatId === null ? "hidden md:flex" : "flex"}`}
+        className={`flex-1 flex flex-col bg-[#F3F4F6] h-screen overflow-hidden ${
+          selectedChatId === null ? "hidden md:flex" : "flex"
+        }`}
       >
         {activeChat ? (
           <>
-            <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shadow-sm z-10">
+            {/* هدر چت */}
+            <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shadow-sm shrink-0">
               <div className="flex items-center gap-3">
-                {/* دکمه بازگشت در موبایل */}
                 <button
                   onClick={() => setSelectedChatId(null)}
                   className="md:hidden p-2 -mr-2 text-slate-500 hover:bg-slate-100 rounded-full"
@@ -192,8 +240,8 @@ export default function ChatPage() {
               </div>
             </header>
 
+            {/* پیام‌ها */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-100">
-              {/* پیام‌ها */}
               {activeChat.messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -206,9 +254,16 @@ export default function ChatPage() {
                         : "bg-white text-slate-800 rounded-bl-none border border-slate-200"
                     }`}
                   >
+                    {!msg.isMe && msg.senderName && (
+                      <p className="text-xs font-bold mb-1 text-slate-600">
+                        {msg.senderName}
+                      </p>
+                    )}
                     <p>{msg.text}</p>
                     <span
-                      className={`text-[10px] block mt-1 text-left ${msg.isMe ? "text-orange-100" : "text-slate-400"}`}
+                      className={`text-[10px] block mt-1 text-left ${
+                        msg.isMe ? "text-orange-100" : "text-slate-400"
+                      }`}
                     >
                       {msg.time}
                     </span>
@@ -218,17 +273,19 @@ export default function ChatPage() {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-3 bg-white border-t border-slate-200">
+            {/* فیلد ارسال پیام */}
+            <div className="p-3 bg-white border-t border-slate-200 shrink-0">
               <div className="flex gap-2">
                 <input
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder="پیام..."
                   className="flex-1 bg-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
                 <button
                   onClick={handleSendMessage}
-                  className="bg-orange-500 text-white p-3 rounded-xl"
+                  className="bg-orange-500 text-white p-3 rounded-xl hover:bg-orange-600 transition"
                 >
                   <Send size={20} />
                 </button>

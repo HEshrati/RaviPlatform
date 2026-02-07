@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, ReactNode } from "react";
+import React, { createContext, useContext, useReducer, useEffect, ReactNode } from "react";
 
 // 1. تعریف تایپ‌ها
 type State = {
@@ -15,7 +15,8 @@ type Action =
   | { type: "LOGOUT" }
   | { type: "COMPLETE_PROFILE" }
   | { type: "TAKE_TEST" }
-  | { type: "SET_CITY"; payload: string };
+  | { type: "SET_CITY"; payload: string }
+  | { type: "RESTORE_STATE"; payload: State };
 
 // 2. وضعیت اولیه
 const initialState: State = {
@@ -49,6 +50,8 @@ function appReducer(state: State, action: Action): State {
       return { ...state, isTestTaken: true };
     case "SET_CITY":
       return { ...state, userCity: action.payload };
+    case "RESTORE_STATE":
+      return action.payload;
     default:
       return state;
   }
@@ -57,6 +60,24 @@ function appReducer(state: State, action: Action): State {
 // 5. پروایدر
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  // بارگذاری state از localStorage
+  useEffect(() => {
+    const savedState = localStorage.getItem("raavi_app_state");
+    if (savedState) {
+      try {
+        const parsedState = JSON.parse(savedState);
+        dispatch({ type: "RESTORE_STATE", payload: parsedState });
+      } catch (error) {
+        console.error("Error loading state from localStorage:", error);
+      }
+    }
+  }, []);
+
+  // ذخیره state در localStorage
+  useEffect(() => {
+    localStorage.setItem("raavi_app_state", JSON.stringify(state));
+  }, [state]);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

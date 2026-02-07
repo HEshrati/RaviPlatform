@@ -1,34 +1,40 @@
-// src/components/ClientShell.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import Preloader from "@/components/Preloader";
+import { usePathname } from "next/navigation";
+import Preloader from "./Preloader";
 
 export default function ClientShell({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [ready, setReady] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const done = () => {
-      // کمی تاخیر برای حس بهتر
-      setTimeout(() => setReady(true), 300);
-    };
+    // نمایش پری‌لودر در هر تغییر مسیر
+    setShowPreloader(true);
 
-    if (document.readyState === "complete") {
-      done();
-    } else {
-      window.addEventListener("load", done);
-      return () => window.removeEventListener("load", done);
-    }
-  }, []);
+    const timer = setTimeout(() => {
+      setShowPreloader(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [pathname]); // وابسته به تغییر مسیر
 
   return (
     <>
-      <Preloader isDone={ready} />
-      {children}
+      {showPreloader && <Preloader />}
+      <div
+        className={
+          showPreloader
+            ? "opacity-0"
+            : "opacity-100 transition-opacity duration-500"
+        }
+      >
+        {children}
+      </div>
     </>
   );
 }

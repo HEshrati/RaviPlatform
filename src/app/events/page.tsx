@@ -3,11 +3,15 @@
 import { useAppContext } from "@/context/AppContext";
 import Link from "next/link";
 import { MapPin, Calendar, ArrowRight, ArrowLeft } from "lucide-react";
-import { EVENTS_DATA } from "@/lib/events-data"; // <--- Import داده‌های مشترک
+import { EVENTS_DATA } from "@/lib/events-data";
+import { useState } from "react";
 
 export default function EventsPage() {
   const { state } = useAppContext();
   const { userCity } = state;
+  const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>(
+    {},
+  );
 
   // فیلتر کردن رویدادها بر اساس شهر کاربر (اگر شهر ست شده باشد)
   const filteredEvents = userCity
@@ -16,6 +20,23 @@ export default function EventsPage() {
 
   // اگر نتیجه فیلتر خالی بود، کل رویدادها را نشان بده (Fallback)
   const eventsToShow = filteredEvents.length > 0 ? filteredEvents : EVENTS_DATA;
+
+  const handleImageError = (eventId: string) => {
+    setImageErrors((prev) => ({ ...prev, [eventId]: true }));
+  };
+
+  // تابع برای ساخت gradient بر اساس category
+  const getCategoryGradient = (category: string) => {
+    const gradients: { [key: string]: string } = {
+      "رویداد اجتماعی": "from-blue-400 to-purple-500",
+      "کارگاه آموزشی": "from-green-400 to-teal-500",
+      "ورزشی و طبیعت‌گردی": "from-emerald-400 to-cyan-500",
+      "فرهنگی و هنری": "from-pink-400 to-rose-500",
+      "کسب‌وکار و شبکه‌سازی": "from-orange-400 to-red-500",
+      "هنر و سرگرمی": "from-amber-400 to-yellow-500",
+    };
+    return gradients[category] || "from-slate-400 to-slate-600";
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 py-10 px-6 font-sans pb-32">
@@ -59,11 +80,39 @@ export default function EventsPage() {
             >
               {/* Image */}
               <div className="h-56 bg-slate-200 relative overflow-hidden">
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {!imageErrors[event.id] ? (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    onError={() => handleImageError(event.id)}
+                    loading="lazy"
+                  />
+                ) : (
+                  // Fallback gradient
+                  <div
+                    className={`w-full h-full bg-gradient-to-br ${getCategoryGradient(
+                      event.category,
+                    )} flex items-center justify-center`}
+                  >
+                    <div className="text-center text-white p-6">
+                      <div className="text-4xl mb-2">
+                        {event.category.includes("اجتماعی")
+                          ? "🤝"
+                          : event.category.includes("آموزشی")
+                            ? "📚"
+                            : event.category.includes("ورزشی")
+                              ? "⛰️"
+                              : event.category.includes("فرهنگی")
+                                ? "📖"
+                                : event.category.includes("کسب‌وکار")
+                                  ? "💼"
+                                  : "🎨"}
+                      </div>
+                      <h4 className="text-sm font-bold">{event.category}</h4>
+                    </div>
+                  </div>
+                )}
                 <div className="absolute top-4 right-4 flex gap-2">
                   <span className="bg-white/95 backdrop-blur text-slate-800 text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1">
                     <MapPin size={12} className="text-orange-500" />
@@ -82,7 +131,7 @@ export default function EventsPage() {
                   {event.category}
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-800 mb-3 leading-snug">
+                <h3 className="text-lg font-bold text-slate-800 mb-3 leading-snug line-clamp-2">
                   {event.title}
                 </h3>
 
@@ -110,6 +159,25 @@ export default function EventsPage() {
             </div>
           ))}
         </div>
+
+        {/* Empty State */}
+        {eventsToShow.length === 0 && (
+          <div className="text-center py-20">
+            <div className="text-6xl mb-4">🎉</div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-2">
+              هیچ رویدادی یافت نشد
+            </h3>
+            <p className="text-slate-500 mb-6">
+              در حال حاضر رویدادی در این شهر برگزار نمی‌شود
+            </p>
+            <Link
+              href="/dashboard/complete-profile"
+              className="inline-block px-6 py-3 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition"
+            >
+              تغییر شهر
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

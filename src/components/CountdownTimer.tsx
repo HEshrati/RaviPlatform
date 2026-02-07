@@ -14,7 +14,6 @@ type TimeLeft = {
 function Circle({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center gap-1">
-      {/* دایره‌ها کوچک‌تر و ظریف‌تر شده‌اند */}
       <div className="bg-orange-500 text-white w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
         <span className="font-bold text-sm md:text-base tabular-nums">
           {String(value).padStart(2, "0")}
@@ -69,9 +68,8 @@ export default function CountdownTimer({
   }, [targetTime]);
 
   return (
-    // ml-auto: برای چسبیدن به سمت راست
-    // items-end: برای راست‌چین کردن محتویات داخلی
-    <div className="w-fit ml-auto flex flex-col items-end gap-3">
+    // تراز مرکزی برای تایمر
+    <div className="w-full flex flex-col items-center gap-3">
       <div className="flex items-center gap-2 text-slate-600 font-bold text-xs md:text-sm bg-white/50 px-3 py-1 rounded-full border border-slate-100 backdrop-blur-sm">
         <Clock className="text-orange-500" size={16} />
         <span>زمان باقی‌مانده تا رویداد بعدی</span>

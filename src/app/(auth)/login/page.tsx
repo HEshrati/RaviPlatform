@@ -1,229 +1,174 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAppContext } from "@/context/AppContext";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // اضافه شده برای ریدایرکت
-import { useAppContext } from "@/context/AppContext"; // اضافه شده برای دسترسی به کانتکست
-import {
-  Lock,
-  Smartphone,
-  ArrowLeft,
-  Star,
-  User,
-  Sparkles,
-  LogIn,
-  Apple,
-  Chrome,
-} from "lucide-react";
-import { testimonials } from "@/lib/testimonials";
+import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
-  const [authMode, setAuthMode] = useState<"login" | "register">("login"); // پیش‌فرض روی login
-  const [tIndex, setTIndex] = useState(0);
-
-  // هوک‌های مورد نیاز
-  const { dispatch } = useAppContext();
   const router = useRouter();
+  const { dispatch } = useAppContext();
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  // لاجیک چرخش نظرات
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTIndex((i) => (i + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const t = testimonials[tIndex];
-
-  // هندل کردن ورود
-  const handleAuth = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // شبیه‌سازی عملیات ورود (در آینده اینجا API کال می‌شود)
-    console.log("Logging in...");
-
-    // 1. تغییر وضعیت در کانتکست
     dispatch({ type: "LOGIN" });
-
-    // 2. تنظیم شهر کاربر (مثال)
-    dispatch({ type: "SET_CITY", payload: "تهران" });
-
-    // 3. هدایت به داشبورد
     router.push("/dashboard");
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-5xl bg-white rounded-[32px] shadow-2xl border border-slate-100 overflow-hidden grid grid-cols-1 lg:grid-cols-[1fr_480px]">
-        {/* سمت چپ: فرم */}
-        <div className="relative p-6 lg:p-10">
-          <div className="absolute top-6 left-6">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition text-sm font-medium"
-            >
-              <ArrowLeft size={18} />
-              بازگشت به خانه
-            </Link>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-slate-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* لوگو و برگشت */}
+        <div className="text-center mb-6 md:mb-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4 text-sm md:text-base"
+          >
+            <ArrowRight size={18} />
+            <span>بازگشت به صفحه اصلی</span>
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2">
+            خوش آمدید
+          </h1>
+          <p className="text-slate-600 text-sm md:text-base">
+            وارد حساب کاربری خود شوید
+          </p>
+        </div>
 
-          <div className="text-right space-y-2 mt-2 mb-6">
-            <h1 className="text-3xl lg:text-4xl font-black text-slate-900 flex items-center justify-end gap-3">
-              خوش آمدید <span className="text-4xl animate-pulse">👋</span>
-            </h1>
-            <p className="text-slate-500 text-sm lg:text-base">
-              لطفا برای ادامه شماره موبایل خود را وارد کنید.
-            </p>
-          </div>
-
-          <div className="bg-slate-100 p-1.5 rounded-2xl flex mb-6">
-            <button
-              onClick={() => setAuthMode("register")}
-              className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                authMode === "register"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
-            >
-              ثبت نام
-            </button>
-            <button
-              onClick={() => setAuthMode("login")}
-              className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                authMode === "login"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
-            >
-              ورود
-            </button>
-          </div>
-
-          {/* اتصال تابع handleAuth به فرم */}
-          <form className="space-y-5" onSubmit={handleAuth}>
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-700 block text-right">
-                شماره موبایل
+        {/* فرم */}
+        <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+            {/* ایمیل */}
+            <div>
+              <label className="block text-sm md:text-base font-bold text-slate-900 mb-2">
+                ایمیل
               </label>
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-600 transition-colors pointer-events-none">
-                  <Smartphone size={20} />
-                </div>
-                <input
-                  type="tel"
-                  placeholder="0912..."
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl px-4 py-4 pl-12 focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 transition-all text-left placeholder:text-right font-medium"
-                  dir="ltr"
-                  required // الزامی کردن فیلد
+              <div className="relative">
+                <Mail
+                  className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-slate-400"
+                  size={18}
                 />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-bold text-slate-700">
-                  رمز عبور
-                </label>
-                {authMode === "login" && (
-                  <Link
-                    href="#"
-                    className="text-xs text-orange-500 hover:text-orange-600 font-bold"
-                  >
-                    فراموشی رمز؟
-                  </Link>
-                )}
-              </div>
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-600 transition-colors pointer-events-none">
-                  <Lock size={20} />
-                </div>
                 <input
-                  type="password"
-                  placeholder="••••••••"
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl px-4 py-4 pl-12 focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 transition-all text-left placeholder:text-right font-bold tracking-widest"
-                  dir="ltr"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  placeholder="example@email.com"
+                  className="w-full pr-10 md:pr-12 pl-3 md:pl-4 py-3 md:py-4 rounded-xl md:rounded-2xl border-2 border-slate-200 focus:border-orange-500 outline-none transition text-sm md:text-base"
                   required
                 />
               </div>
             </div>
 
+            {/* رمز عبور */}
+            <div>
+              <label className="block text-sm md:text-base font-bold text-slate-900 mb-2">
+                رمز عبور
+              </label>
+              <div className="relative">
+                <Lock
+                  className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-slate-400"
+                  size={18}
+                />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  placeholder="••••••••"
+                  className="w-full pr-10 md:pr-12 pl-10 md:pl-12 py-3 md:py-4 rounded-xl md:rounded-2xl border-2 border-slate-200 focus:border-orange-500 outline-none transition text-sm md:text-base"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            {/* فراموشی رمز */}
+            <div className="flex items-center justify-between text-xs md:text-sm">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-slate-300 text-orange-500 focus:ring-orange-500"
+                />
+                <span className="text-slate-600">مرا به خاطر بسپار</span>
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-orange-500 hover:text-orange-600 font-bold"
+              >
+                فراموشی رمز عبور؟
+              </Link>
+            </div>
+
+            {/* دکمه ورود */}
             <button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-bold py-4 rounded-2xl shadow-lg shadow-orange-500/25 transition-all flex items-center justify-center gap-2 text-lg mt-4 cursor-pointer"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 md:py-4 rounded-xl md:rounded-2xl shadow-lg shadow-orange-200 transition-all hover:-translate-y-1 text-sm md:text-base"
             >
-              {authMode === "login" ? "ورود به حساب" : "ثبت نام کنید"}
-              <LogIn className="rotate-180" size={20} />
+              ورود به حساب کاربری
+            </button>
+
+            {/* خط جداکننده */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200"></div>
+              </div>
+              <div className="relative flex justify-center text-xs md:text-sm">
+                <span className="px-4 bg-white text-slate-500">یا</span>
+              </div>
+            </div>
+
+            {/* ورود با گوگل */}
+            <button
+              type="button"
+              className="w-full bg-white hover:bg-slate-50 text-slate-900 font-bold py-3 md:py-4 rounded-xl md:rounded-2xl border-2 border-slate-200 transition-all flex items-center justify-center gap-3 text-sm md:text-base"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
+              </svg>
+              ورود با Google
             </button>
           </form>
 
-          {/* ... بقیه کد (بخش سوشال و فوتر) بدون تغییر ... */}
-          <div className="relative flex items-center py-4">
-            <div className="flex-grow border-t border-slate-200"></div>
-            <span className="flex-shrink-0 mx-4 text-slate-400 text-xs">
-              یا ورود با
-            </span>
-            <div className="flex-grow border-t border-slate-200"></div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <button className="flex items-center justify-center gap-2 border border-slate-200 rounded-2xl py-3 text-slate-700 hover:bg-slate-50 transition">
-              <Apple size={18} />
-              <span className="font-bold text-sm">اپل</span>
-            </button>
-            <button className="flex items-center justify-center gap-2 border border-slate-200 rounded-2xl py-3 text-slate-700 hover:bg-slate-50 transition">
-              <Chrome size={18} />
-              <span className="font-bold text-sm">گوگل</span>
-            </button>
-          </div>
-        </div>
-
-        {/* سمت راست: برندینگ */}
-        <div className="bg-[#161F2E] text-white p-8 lg:p-10 relative hidden lg:block">
-          {/* ... کدهای سمت راست عیناً تکرار شود ... */}
-          <div className="flex items-center justify-between">
-            <div className="text-xl font-black">راوی</div>
-            <div className="w-9 h-9 rounded-xl bg-slate-800/50 flex items-center justify-center">
-              <Sparkles className="text-slate-300" size={20} />
-            </div>
-          </div>
-          <div className="mt-10 text-right">
-            <h1 className="text-4xl font-extrabold mb-6 leading-tight">
-              هوشمندانه <br /> انتخاب کن
-            </h1>
-            <p className="text-slate-400 text-lg leading-relaxed font-light mb-12">
-              با ورود به راوی، به جامعه‌ای از افراد می‌پیوندید که به دنبال روابط
-              معنادار بر پایه علم روانشناسی هستند.
-            </p>
-          </div>
-          <div className="w-full bg-[#1E293B] rounded-2xl p-6 border border-slate-700/50 shadow-xl relative">
-            <div className="flex gap-1 mb-4">
-              {Array.from({ length: t.rating ?? 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  size={16}
-                  className="text-orange-500 fill-orange-500"
-                />
-              ))}
-            </div>
-            <p className="text-slate-300 text-sm text-right leading-7 italic mb-6">
-              "{t.text}"
-            </p>
-            <div className="flex items-center justify-end gap-4">
-              <div className="text-right">
-                <h4 className="font-bold text-white text-sm">{t.name}</h4>
-                <div className="flex items-center justify-end gap-1.5 mt-1">
-                  <span className="text-[10px] text-slate-400">
-                    {t.role ?? "کاربر راوی"}
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                </div>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-slate-600 flex items-center justify-center overflow-hidden border border-slate-500">
-                <User className="text-slate-300 w-6 h-6" />
-              </div>
-            </div>
-          </div>
-          <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-l from-transparent to-[#161F2E]" />
+          {/* ثبت نام */}
+          <p className="text-center text-slate-600 mt-6 text-xs md:text-sm">
+            حساب کاربری ندارید؟{" "}
+            <Link
+              href="/signup"
+              className="text-orange-500 hover:text-orange-600 font-bold"
+            >
+              ثبت نام کنید
+            </Link>
+          </p>
         </div>
       </div>
     </div>
