@@ -4,7 +4,6 @@ import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
 import ClientShell from "@/components/ClientShell";
 
-// تنظیمات فونت وزیرمتن (دانلود خودکار از گوگل)
 const vazirmatn = Vazirmatn({
   subsets: ["arabic", "latin"],
   variable: "--font-vazirmatn",
