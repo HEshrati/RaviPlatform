@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "images.unsplash.com", // تصاویر Unsplash
+      },
+      {
+        protocol: "https",
         hostname: "placehold.co", // سرویس ایجاد تصویر جایگزین برای طرح‌ها
       },
       {
