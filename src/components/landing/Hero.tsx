@@ -40,7 +40,7 @@ export default function Hero({ ctaHref }: HeroProps) {
           <div className="flex flex-col sm:flex-row gap-4 items-center lg:items-start">
             <Link href={ctaHref} className="w-full sm:w-auto">
               <button className="w-full sm:w-auto bg-orange-500 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-bold text-sm md:text-base hover:bg-orange-600 transition shadow-xl shadow-orange-200/50 hover:-translate-y-1">
-                شروع رایگان کنید
+                رایگان شروع کنید
               </button>
             </Link>
             <Link href="/events" className="w-full sm:w-auto">
