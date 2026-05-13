@@ -1,18 +1,18 @@
 "use client";
 
-
-import { useState, Suspense, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { authAPI, isAdminPhone } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 export default function VerifyPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-[#090e1c]" />}>
-      <VerifyPageInner />
-    </Suspense>
-  );
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return <div className="min-h-screen bg-[#090e1c]" />;
+  return <VerifyPageInner />;
 }
 
 function VerifyPageInner() {
