@@ -46,10 +46,10 @@ export default function TestsPage() {
     <div className="min-h-screen p-6" dir="rtl">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
-          <button onClick={() => router.back()} className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/5">←</button>
+          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-50">←</button>
           <div>
             <p className="text-slate-500 text-xs mb-1">مرحله ۳ از ۳</p>
-            <h1 className="text-2xl font-black text-white">دغدغه‌ها و تست‌ها</h1>
+            <h1 className="text-2xl font-black text-slate-900">دغدغه‌ها و تست‌ها</h1>
           </div>
         </div>
 
@@ -69,10 +69,10 @@ export default function TestsPage() {
             {/* Required tests */}
             {data?.requiredTests?.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-white font-bold mb-3 text-sm">تست‌های مرتبط با موضوع شما:</h3>
+                <h3 className="text-slate-900 font-bold mb-3 text-sm">تست‌های مرتبط با موضوع شما:</h3>
                 <div className="flex flex-wrap gap-2">
                   {data.requiredTests.map((t: string) => (
-                    <span key={t} className="text-xs bg-white/5 border border-white/10 text-slate-300 px-3 py-1 rounded-full">
+                    <span key={t} className="text-xs bg-slate-50 border border-slate-200 text-slate-600 px-3 py-1 rounded-full">
                       {testLabels[t] || t}
                     </span>
                   ))}
@@ -83,7 +83,7 @@ export default function TestsPage() {
 
             {/* Main textarea */}
             <div className="mb-4">
-              <label className="text-white font-bold text-sm block mb-3">
+              <label className="text-slate-900 font-bold text-sm block mb-3">
                 دغدغه‌ها، افکار و احساساتتان را بنویسید
               </label>
               <textarea
@@ -91,10 +91,10 @@ export default function TestsPage() {
                 onChange={(e) => setText(e.target.value)}
                 placeholder="هر چه در ذهنتان می‌گذرد را آزادانه بنویسید. چه چیزی شما را نگران کرده؟ چه مدت است که این احساس را دارید؟ چه تجربه‌هایی داشته‌اید؟..."
                 rows={8}
-                className="w-full rounded-2xl p-4 text-sm resize-none outline-none text-white placeholder-slate-600"
+                className="w-full rounded-2xl p-4 text-sm resize-none outline-none text-slate-900 placeholder-slate-600"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: `1px solid ${text.length >= MIN_CHARS ? "rgba(34,197,94,0.4)" : "rgba(255,255,255,0.1)"}`,
+                  background: "rgba(0,0,0,0.03)",
+                  border: `1px solid ${text.length >= MIN_CHARS ? "rgba(34,197,94,0.4)" : "rgba(0,0,0,0.08)"}`,
                   lineHeight: "1.8",
                 }}
               />
@@ -112,7 +112,7 @@ export default function TestsPage() {
               onClick={submit}
               disabled={text.length < MIN_CHARS || submitting}
               className={`w-full py-4 rounded-2xl font-black text-base transition-all ${
-                text.length >= MIN_CHARS ? "bg-orange-500 hover:bg-orange-600 text-white" : "bg-white/5 text-slate-600 cursor-not-allowed"
+                text.length >= MIN_CHARS ? "bg-orange-500 hover:bg-orange-600 text-slate-900" : "bg-slate-50 text-slate-600 cursor-not-allowed"
               }`}
             >
               {submitting ? "در حال ارسال..." : "ارسال و تکمیل"}

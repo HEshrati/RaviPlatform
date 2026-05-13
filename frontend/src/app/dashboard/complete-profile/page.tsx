@@ -87,8 +87,8 @@ export default function CompleteProfilePage() {
                           flex items-center justify-center mx-auto mb-5 animate-pulse">
             <CheckCircle2 size={38} className="text-green-400" />
           </div>
-          <h2 className="text-2xl font-black text-white mb-2">پروفایل تکمیل شد! 🎉</h2>
-          <p className="text-slate-400 text-sm">در حال انتقال به صفحه همنشینی...</p>
+          <h2 className="text-2xl font-black text-slate-900 mb-2">پروفایل تکمیل شد! 🎉</h2>
+          <p className="text-slate-500 text-sm">در حال انتقال به صفحه همنشینی...</p>
         </div>
       </div>
     );
@@ -107,20 +107,20 @@ export default function CompleteProfilePage() {
               boxShadow: "0 12px 32px rgba(255,107,0,0.45)"
             }}
           >
-            <Sparkles size={28} className="text-white" />
+            <Sparkles size={28} className="text-slate-900" />
           </div>
-          <h1 className="text-2xl font-black text-white leading-tight">تکمیل پروفایل</h1>
-          <p className="text-slate-400 text-sm mt-2 leading-relaxed">
+          <h1 className="text-2xl font-black text-slate-900 leading-tight">تکمیل پروفایل</h1>
+          <p className="text-slate-500 text-sm mt-2 leading-relaxed">
             برای دسترسی به همنشینی‌ها، لطفاً اطلاعات زیر را وارد کنید
           </p>
         </div>
 
         {/* ── Name Input ── */}
         <div
-          className="rounded-3xl p-5 border border-white/8"
-          style={{ background: "rgba(255,255,255,0.04)" }}
+          className="rounded-3xl p-5 border border-slate-200"
+          style={{ background: "rgba(0,0,0,0.03)" }}
         >
-          <label className="flex items-center gap-2 text-sm font-bold text-slate-300 mb-3">
+          <label className="flex items-center gap-2 text-sm font-bold text-slate-600 mb-3">
             <User size={15} className="text-orange-400" />
             نام و نام خانوادگی <span className="text-red-400">*</span>
           </label>
@@ -129,10 +129,10 @@ export default function CompleteProfilePage() {
             value={name}
             onChange={(e) => { setName(e.target.value); setError(""); }}
             placeholder="مثال: علی احمدی"
-            className="w-full rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500
+            className="w-full rounded-2xl px-4 py-3 text-sm text-slate-900 placeholder-slate-500
                        outline-none transition-all"
             style={{
-              background: "rgba(255,255,255,0.07)",
+              background: "rgba(0,0,0,0.05)",
               border: `1px solid ${name.trim().length >= 2 ? "rgba(255,107,0,0.4)" : "rgba(255,255,255,0.12)"}`,
             }}
           />
@@ -145,10 +145,10 @@ export default function CompleteProfilePage() {
 
         {/* ── City Selector ── */}
         <div
-          className="rounded-3xl p-5 border border-white/8"
-          style={{ background: "rgba(255,255,255,0.04)" }}
+          className="rounded-3xl p-5 border border-slate-200"
+          style={{ background: "rgba(0,0,0,0.03)" }}
         >
-          <label className="flex items-center gap-2 text-sm font-bold text-slate-300 mb-3">
+          <label className="flex items-center gap-2 text-sm font-bold text-slate-600 mb-3">
             <MapPin size={15} className="text-orange-400" />
             شهر محل سکونت <span className="text-red-400">*</span>
           </label>
@@ -159,7 +159,7 @@ export default function CompleteProfilePage() {
               onClick={() => setCityOpen(!cityOpen)}
               className="w-full rounded-2xl px-4 py-3 text-sm text-right flex items-center justify-between transition-all"
               style={{
-                background: "rgba(255,255,255,0.07)",
+                background: "rgba(0,0,0,0.05)",
                 border: `1px solid ${city ? "rgba(255,107,0,0.4)" : "rgba(255,255,255,0.12)"}`,
                 color: city ? "white" : "rgba(148,163,184,1)"
               }}
@@ -167,13 +167,13 @@ export default function CompleteProfilePage() {
               <span>{city || "شهر خود را انتخاب کنید"}</span>
               <ChevronDown
                 size={16}
-                className={`text-slate-400 transition-transform ${cityOpen ? "rotate-180" : ""}`}
+                className={`text-slate-500 transition-transform ${cityOpen ? "rotate-180" : ""}`}
               />
             </button>
 
             {cityOpen && (
               <div
-                className="absolute top-full mt-2 left-0 right-0 rounded-2xl border border-white/10
+                className="absolute top-full mt-2 left-0 right-0 rounded-2xl border border-slate-200
                            shadow-2xl z-50 overflow-y-auto max-h-52"
                 style={{ background: "rgba(15, 23, 42, 0.97)", backdropFilter: "blur(16px)" }}
               >
@@ -184,7 +184,7 @@ export default function CompleteProfilePage() {
                     className={`w-full text-right px-4 py-2.5 text-sm transition-colors
                                 ${c === city
                                   ? "bg-orange-500/20 text-orange-400 font-bold"
-                                  : "text-slate-300 hover:bg-white/5 hover:text-white"
+                                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                                 }`}
                   >
                     {c === city && "✓ "}
@@ -204,10 +204,10 @@ export default function CompleteProfilePage() {
                 className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all border ${
                   city === c
                     ? "bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/25"
-                    : "text-slate-400 hover:text-white"
+                    : "text-slate-500 hover:text-slate-900"
                 }`}
                 style={city !== c
-                  ? { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.08)" }
+                  ? { background: "rgba(0,0,0,0.03)", borderColor: "rgba(0,0,0,0.06)" }
                   : {}
                 }
               >

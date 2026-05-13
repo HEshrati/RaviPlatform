@@ -118,7 +118,7 @@ function StatCard({
                   ? "text-green-400"
                   : trend === "down"
                     ? "text-red-400"
-                    : "text-slate-400"
+                    : "text-slate-500"
               }`}
             >
               {trend === "up" ? (
@@ -131,7 +131,7 @@ function StatCard({
           {onClick && (
             <button
               onClick={onClick}
-              className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-all"
+              className="p-1 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"
               title="توضیحات"
             >
               <Eye size={13} />
@@ -140,8 +140,8 @@ function StatCard({
         </div>
       </div>
       <div>
-        <p className="text-slate-400 text-xs mb-1">{label}</p>
-        <p className="text-white font-black text-2xl">{value}</p>
+        <p className="text-slate-500 text-xs mb-1">{label}</p>
+        <p className="text-slate-900 font-black text-2xl">{value}</p>
         {sub && <p className="text-slate-500 text-xs mt-1">{sub}</p>}
       </div>
     </div>
@@ -190,7 +190,7 @@ function AlertCard({ alert, onUpdate }: { alert: any; onUpdate: () => void }) {
             >
               {alert.severity?.toUpperCase()}
             </span>
-            <span className="text-xs text-slate-400 font-medium">
+            <span className="text-xs text-slate-500 font-medium">
               {STATUS_LABEL[alert.status] || alert.status}
             </span>
             <span className="text-xs text-slate-500">
@@ -202,19 +202,19 @@ function AlertCard({ alert, onUpdate }: { alert: any; onUpdate: () => void }) {
               })}
             </span>
           </div>
-          <p className="text-white font-bold text-sm">{alert.title}</p>
+          <p className="text-slate-900 font-bold text-sm">{alert.title}</p>
         </div>
         <div className="flex items-center gap-1">
           <span
             className="text-xs font-black px-2 py-1 rounded-lg"
-            style={{ background: "rgba(255,255,255,0.05)", color: "#94a3b8" }}
+            style={{ background: "rgba(0,0,0,0.04)", color: "#94a3b8" }}
           >
             {alert.risk_score}%
           </span>
           {expanded ? (
-            <ChevronUp size={16} className="text-slate-400" />
+            <ChevronUp size={16} className="text-slate-500" />
           ) : (
-            <ChevronDown size={16} className="text-slate-400" />
+            <ChevronDown size={16} className="text-slate-500" />
           )}
         </div>
       </div>
@@ -222,14 +222,14 @@ function AlertCard({ alert, onUpdate }: { alert: any; onUpdate: () => void }) {
       {expanded && (
         <div className="mt-4 space-y-3 border-t border-slate-700/30 pt-3">
           <div>
-            <p className="text-slate-400 text-xs font-bold mb-1">تحلیل AI</p>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-slate-500 text-xs font-bold mb-1">تحلیل AI</p>
+            <p className="text-slate-600 text-sm leading-relaxed">
               {alert.ai_analysis}
             </p>
           </div>
           {alert.recommendation && (
             <div>
-              <p className="text-slate-400 text-xs font-bold mb-1">
+              <p className="text-slate-500 text-xs font-bold mb-1">
                 پیشنهاد اقدام
               </p>
               <p className="text-green-300 text-sm leading-relaxed">
@@ -256,7 +256,7 @@ function AlertCard({ alert, onUpdate }: { alert: any; onUpdate: () => void }) {
               <button
                 onClick={() => handleStatus("ignored")}
                 disabled={loading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-500/15 text-slate-400 hover:bg-slate-500/25 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-500/15 text-slate-500 hover:bg-slate-500/25 transition-all"
               >
                 <XCircle size={13} /> نادیده
               </button>
@@ -290,7 +290,7 @@ function MiniBar({
     <div className="space-y-2">
       {data.slice(0, 8).map((d, i) => (
         <div key={i} className="flex items-center gap-3">
-          <span className="text-slate-400 text-xs w-28 truncate text-right flex-shrink-0">
+          <span className="text-slate-500 text-xs w-28 truncate text-right flex-shrink-0">
             {d[labelKey]}
           </span>
           <div className="flex-1 h-5 rounded-full bg-slate-700/50 overflow-hidden">
@@ -303,7 +303,7 @@ function MiniBar({
               }}
             />
           </div>
-          <span className="text-slate-300 text-xs font-bold w-12 text-left flex-shrink-0">
+          <span className="text-slate-600 text-xs font-bold w-12 text-left flex-shrink-0">
             {Number(d[valueKey]).toLocaleString()}
           </span>
         </div>
@@ -353,7 +353,7 @@ function TrendChart({ data }: { data: any[] }) {
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-4 text-xs text-slate-400">
+      <div className="flex items-center gap-4 text-xs text-slate-500">
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-sm bg-orange-500/50" />
           کل رویدادها
@@ -438,12 +438,12 @@ export default function CrmDashboardPage() {
       {/* ── مودال توضیحات ── */}
       {infoModal && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={() => setInfoModal(null)}>
-          <div className="w-full max-w-md rounded-3xl p-6 shadow-2xl" style={{ background: "linear-gradient(145deg,#1B2A4A,#0d1e35)", border: "1px solid rgba(255,255,255,0.1)" }} onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-3xl p-6 shadow-2xl" style={{ background: "linear-gradient(145deg,#1B2A4A,#0d1e35)", border: "1px solid rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white font-black text-lg">{infoModal.title}</h3>
-              <button onClick={() => setInfoModal(null)} className="text-slate-400 hover:text-white"><XCircle size={20} /></button>
+              <button onClick={() => setInfoModal(null)} className="text-slate-500 hover:text-white"><XCircle size={20} /></button>
             </div>
-            <p className="text-slate-300 text-sm leading-relaxed">{infoModal.content}</p>
+            <p className="text-slate-600 text-sm leading-relaxed">{infoModal.content}</p>
             <button onClick={() => setInfoModal(null)} className="mt-5 w-full py-3 rounded-2xl text-sm font-black text-white" style={{ background: "linear-gradient(135deg,#FF6B00,#FF9A3C)" }}>متوجه شدم</button>
           </div>
         </div>
@@ -452,16 +452,16 @@ export default function CrmDashboardPage() {
       {/* ── مودال تحلیل AI ── */}
       {aiModal && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={() => setAiModal(null)}>
-          <div className="w-full max-w-lg rounded-3xl p-6 shadow-2xl" style={{ background: "linear-gradient(145deg,#1B2A4A,#0d1e35)", border: "1px solid rgba(255,255,255,0.1)" }} onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-lg rounded-3xl p-6 shadow-2xl" style={{ background: "linear-gradient(145deg,#1B2A4A,#0d1e35)", border: "1px solid rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Brain size={20} className="text-purple-400" />
                 <h3 className="text-white font-black text-lg">تحلیل هوش مصنوعی</h3>
               </div>
-              <button onClick={() => setAiModal(null)} className="text-slate-400 hover:text-white"><XCircle size={20} /></button>
+              <button onClick={() => setAiModal(null)} className="text-slate-500 hover:text-white"><XCircle size={20} /></button>
             </div>
             <div className="bg-purple-500/10 rounded-2xl p-4 border border-purple-500/20">
-              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{aiModal}</p>
+              <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">{aiModal}</p>
             </div>
             <button onClick={() => setAiModal(null)} className="mt-4 w-full py-3 rounded-2xl text-sm font-black text-white" style={{ background: "linear-gradient(135deg,#7c3aed,#9333ea)" }}>بستن</button>
           </div>
@@ -471,27 +471,27 @@ export default function CrmDashboardPage() {
       {/* ── مودال کاربر در خطر ریزش ── */}
       {selectedChurnUser && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }} onClick={() => setSelectedChurnUser(null)}>
-          <div className="w-full max-w-md rounded-3xl p-6 shadow-2xl" style={{ background: "linear-gradient(145deg,#1B2A4A,#0d1e35)", border: "1px solid rgba(255,255,255,0.1)" }} onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-3xl p-6 shadow-2xl" style={{ background: "linear-gradient(145deg,#1B2A4A,#0d1e35)", border: "1px solid rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <ShieldAlert size={20} className="text-yellow-400" />
                 <h3 className="text-white font-black text-lg">رفتار کاربر در سایت</h3>
               </div>
-              <button onClick={() => setSelectedChurnUser(null)} className="text-slate-400 hover:text-white"><XCircle size={20} /></button>
+              <button onClick={() => setSelectedChurnUser(null)} className="text-slate-500 hover:text-slate-900"><XCircle size={20} /></button>
             </div>
 
             <div className="space-y-3 mb-5">
-              <div className="rounded-2xl p-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <p className="text-slate-400 text-xs mb-1">شناسه کاربر</p>
-                <p className="text-white font-mono text-sm">{selectedChurnUser.user_id}</p>
+              <div className="rounded-2xl p-4" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }}>
+                <p className="text-slate-500 text-xs mb-1">شناسه کاربر</p>
+                <p className="text-slate-900 font-mono text-sm">{selectedChurnUser.user_id}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-2xl p-3" style={{ background: "rgba(234,179,8,0.1)", border: "1px solid rgba(234,179,8,0.2)" }}>
-                  <p className="text-slate-400 text-xs mb-1">آخرین فعالیت</p>
+                  <p className="text-slate-500 text-xs mb-1">آخرین فعالیت</p>
                   <p className="text-yellow-400 font-bold text-sm">{selectedChurnUser.last_active ? new Date(selectedChurnUser.last_active).toLocaleDateString("fa-IR") : "—"}</p>
                 </div>
                 <div className="rounded-2xl p-3" style={{ background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.2)" }}>
-                  <p className="text-slate-400 text-xs mb-1">تعداد اقدام</p>
+                  <p className="text-slate-500 text-xs mb-1">تعداد اقدام</p>
                   <p className="text-orange-400 font-bold text-sm">{Number(selectedChurnUser.total_actions || 0).toLocaleString()}</p>
                 </div>
               </div>
@@ -499,7 +499,7 @@ export default function CrmDashboardPage() {
 
             <div className="rounded-2xl p-4 mb-4" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
               <p className="text-red-400 font-bold text-sm mb-2">⚠️ دلایل خطر ریزش:</p>
-              <ul className="text-slate-300 text-xs space-y-1.5">
+              <ul className="text-slate-600 text-xs space-y-1.5">
                 <li>• بیش از ۱۴ روز است که وارد سیستم نشده</li>
                 <li>• تعداد رزرو‌های تکمیل‌شده پایین است</li>
                 <li>• آخرین تعامل با پلتفرم منجر به خرید نشده</li>
@@ -509,10 +509,10 @@ export default function CrmDashboardPage() {
 
             <div className="rounded-2xl p-4" style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)" }}>
               <p className="text-green-400 font-bold text-sm mb-2">💡 پیشنهاد اقدام:</p>
-              <p className="text-slate-300 text-xs">ارسال پیام شخصی‌سازی‌شده یا تخفیف ویژه برای این کاربر می‌تواند نرخ بازگشت را تا ۳۵٪ افزایش دهد.</p>
+              <p className="text-slate-600 text-xs">ارسال پیام شخصی‌سازی‌شده یا تخفیف ویژه برای این کاربر می‌تواند نرخ بازگشت را تا ۳۵٪ افزایش دهد.</p>
             </div>
 
-            <button onClick={() => setSelectedChurnUser(null)} className="mt-4 w-full py-3 rounded-2xl text-sm font-black text-white" style={{ background: "linear-gradient(135deg,#FF6B00,#FF9A3C)" }}>بستن</button>
+            <button onClick={() => setSelectedChurnUser(null)} className="mt-4 w-full py-3 rounded-2xl text-sm font-black text-slate-900" style={{ background: "linear-gradient(135deg,#FF6B00,#FF9A3C)" }}>بستن</button>
           </div>
         </div>
       )}
@@ -525,11 +525,11 @@ export default function CrmDashboardPage() {
                 background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
               }}
             >
-              <Brain size={24} className="text-white" />
+              <Brain size={24} className="text-slate-900" />
             </div>
             <div>
-              <h1 className="text-white font-black text-2xl">داشبورد CRM</h1>
-              <p className="text-slate-400 text-sm">
+              <h1 className="text-slate-900 font-black text-2xl">داشبورد CRM</h1>
+              <p className="text-slate-500 text-sm">
                 تحلیل رفتار کاربران · هوش مصنوعی
               </p>
             </div>
@@ -556,8 +556,8 @@ export default function CrmDashboardPage() {
                 onClick={() => setDays(d)}
                 className={`px-3 py-2 text-xs font-bold transition-all ${
                   days === d
-                    ? "bg-indigo-600 text-white"
-                    : "text-slate-400 hover:text-white"
+                    ? "bg-indigo-600 text-slate-900"
+                    : "text-slate-500 hover:text-slate-900"
                 }`}
               >
                 {d} روز
@@ -569,7 +569,7 @@ export default function CrmDashboardPage() {
           <button
             onClick={handleAnalyze}
             disabled={analyzing}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm text-slate-900 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
             style={{
               background: analyzing
                 ? "rgba(99,102,241,0.4)"
@@ -589,7 +589,7 @@ export default function CrmDashboardPage() {
           <button
             onClick={loadAll}
             disabled={loading}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-all border border-slate-700/50"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 transition-all border border-slate-700/50"
             style={{ background: "rgba(15,23,42,0.7)" }}
           >
             <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
@@ -617,7 +617,7 @@ export default function CrmDashboardPage() {
             <AlertTriangle size={20} className="text-orange-400 flex-shrink-0 mt-0.5" />
           )}
           <div className="flex-1">
-            <p className="text-slate-300 text-sm font-medium line-clamp-2">{analyzeResult}</p>
+            <p className="text-slate-600 text-sm font-medium line-clamp-2">{analyzeResult}</p>
             <p className="text-slate-500 text-xs mt-1">کلیک کنید تا تحلیل کامل را ببینید ↗</p>
           </div>
         </div>
@@ -627,7 +627,7 @@ export default function CrmDashboardPage() {
         <div className="flex items-center justify-center h-64">
           <div className="flex flex-col items-center gap-3">
             <RefreshCw size={32} className="text-indigo-400 animate-spin" />
-            <p className="text-slate-400">در حال بارگذاری...</p>
+            <p className="text-slate-500">در حال بارگذاری...</p>
           </div>
         </div>
       ) : (
@@ -708,8 +708,8 @@ export default function CrmDashboardPage() {
                 onClick={() => setActiveTab(key as any)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
                   activeTab === key
-                    ? "text-white"
-                    : "text-slate-400 hover:text-white"
+                    ? "text-slate-900"
+                    : "text-slate-500 hover:text-slate-900"
                 }`}
                 style={
                   activeTab === key
@@ -719,7 +719,7 @@ export default function CrmDashboardPage() {
                       }
                     : {
                         background: "rgba(15,23,42,0.5)",
-                        border: "1px solid rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(0,0,0,0.04)",
                       }
                 }
               >
@@ -737,7 +737,7 @@ export default function CrmDashboardPage() {
                 className="rounded-2xl p-6 border border-slate-700/40"
                 style={{ background: "rgba(15,23,42,0.7)" }}
               >
-                <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                <h3 className="text-slate-900 font-bold mb-4 flex items-center gap-2">
                   <TrendingUp size={18} className="text-indigo-400" />
                   روند {days} روز گذشته
                   <button
@@ -748,7 +748,7 @@ export default function CrmDashboardPage() {
                     const peakDay = trend.length ? trend.reduce((a:any,b:any)=>(a.total||0)>(b.total||0)?a:b,{date:"",total:0}) : null;
                     setInfoModal({ title: `روند ${days} روز گذشته`, content: `این نمودار تعداد فعالیت‌های کاربران در ${days} روز گذشته را نشان می‌دهد.\n\n📊 آمار این بازه:\n• کل رویدادها: ${totalEvents.toLocaleString()}\n• کل خطاها: ${totalErrors.toLocaleString()}\n• نرخ خطا: ${totalEvents>0?Math.round(totalErrors/totalEvents*100):0}٪${peakDay?.date?"\n• پرترافیک‌ترین روز: "+peakDay.date+" با "+peakDay.total+" رویداد":""}\n\nروند صعودی نشان‌دهنده رشد استفاده از پلتفرم است. از این نمودار برای شناسایی الگوهای فصلی استفاده کنید.` });
                   }}
-                    className="mr-auto p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                    className="mr-auto p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"
                     title="توضیحات"
                   >
                     <Eye size={14} />
@@ -762,7 +762,7 @@ export default function CrmDashboardPage() {
                 className="rounded-2xl p-6 border border-slate-700/40"
                 style={{ background: "rgba(15,23,42,0.7)" }}
               >
-                <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                <h3 className="text-slate-900 font-bold mb-4 flex items-center gap-2">
                   <Activity size={18} className="text-orange-400" />
                   توزیع رویدادها
                   <button
@@ -772,7 +772,7 @@ export default function CrmDashboardPage() {
                     const totalCount = types.reduce((s:number,d:any)=>s+(Number(d.count)||0),0);
                     setInfoModal({ title: "توزیع رویدادها", content: `این نمودار توزیع رویدادها بر اساس دسته‌بندی‌های مختلف را نشان می‌دهد.\n\n📊 آمار جاری:\n• کل رویدادهای ثبت‌شده: ${totalCount.toLocaleString()}\n• تعداد دسته‌بندی فعال: ${types.length}${top?.type?"\n• پرطرفدارترین: "+top.type+" با "+top.count+" رویداد":""}\n\nاز این داده برای برنامه‌ریزی رویدادهای آینده و تخصیص منابع استفاده کنید.` });
                   }}
-                    className="mr-auto p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                    className="mr-auto p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"
                   >
                     <Eye size={14} />
                   </button>
@@ -790,7 +790,7 @@ export default function CrmDashboardPage() {
                 className="rounded-2xl p-6 border border-slate-700/40"
                 style={{ background: "rgba(15,23,42,0.7)" }}
               >
-                <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                <h3 className="text-slate-900 font-bold mb-4 flex items-center gap-2">
                   <Globe size={18} className="text-blue-400" />
                   صفحات پربازدید
                   <button
@@ -800,7 +800,7 @@ export default function CrmDashboardPage() {
                     const totalViews = pages.reduce((s:number,d:any)=>s+(Number(d.count)||0),0);
                     setInfoModal({ title: "صفحات پربازدید", content: `این نمودار پربازدیدترین صفحات پلتفرم را نشان می‌دهد.\n\n📊 آمار جاری:\n• کل بازدیدها: ${totalViews.toLocaleString()}\n• تعداد صفحات رصدشده: ${pages.length}${top?.path?"\n• پربازدیدترین: "+top.path+" با "+top.count+" بازدید":""}\n\nصفحاتی که بازدید بیشتری دارند باید بهینه‌سازی شده و محتوای مشابه تولید شود.` });
                   }}
-                    className="mr-auto p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                    className="mr-auto p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"
                   >
                     <Eye size={14} />
                   </button>
@@ -818,7 +818,7 @@ export default function CrmDashboardPage() {
                 className="rounded-2xl p-6 border border-slate-700/40"
                 style={{ background: "rgba(15,23,42,0.7)" }}
               >
-                <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                <h3 className="text-slate-900 font-bold mb-4 flex items-center gap-2">
                   <Brain size={18} className="text-purple-400" />
                   آخرین تحلیل‌های AI
                   <button
@@ -827,7 +827,7 @@ export default function CrmDashboardPage() {
                     const critCount = openAlerts.filter((a:any)=>a.severity==="critical").length;
                     setInfoModal({ title: "تحلیل‌های هوش مصنوعی", content: `این بخش آخرین هشدارها و تحلیل‌های تولید شده توسط سیستم هوش مصنوعی راوی را نشان می‌دهد.\n\n🤖 آمار جاری:\n• کل هشدارهای باز: ${openAlerts.length}\n• هشدارهای بحرانی: ${critCount}\n• آخرین تحلیل‌های ثبت‌شده: ${recentA.length} مورد\n\nهوش مصنوعی رفتار کاربران و الگوهای استفاده را به صورت خودکار تحلیل می‌کند. برای مشاهده جزئیات روی هر هشدار کلیک کنید.` });
                   }}
-                    className="mr-auto p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                    className="mr-auto p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"
                   >
                     <Eye size={14} />
                   </button>
@@ -843,14 +843,14 @@ export default function CrmDashboardPage() {
                       <button
                         key={a.id}
                         onClick={() => setAiModal(a.ai_analysis || a.title || "تحلیل در دسترس نیست")}
-                        className="flex items-start gap-2 w-full text-right hover:bg-white/5 rounded-xl p-1 transition-all"
+                        className="flex items-start gap-2 w-full text-right hover:bg-slate-50 rounded-xl p-1 transition-all"
                       >
                         <div
                           className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5"
                           style={{ background: SEVERITY_COLOR[a.severity] || "#94a3b8" }}
                         />
                         <div className="flex-1">
-                          <p className="text-slate-300 text-sm">{a.title}</p>
+                          <p className="text-slate-600 text-sm">{a.title}</p>
                           <p className="text-slate-500 text-xs">
                             {new Date(a.created_at).toLocaleDateString("fa-IR")} · کلیک برای جزئیات
                           </p>
@@ -875,7 +875,7 @@ export default function CrmDashboardPage() {
                   <p className="text-green-300 font-bold">
                     هیچ هشداری وجود ندارد
                   </p>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-slate-500 text-sm">
                     سیستم در وضعیت نرمال کار می‌کند
                   </p>
                 </div>
@@ -895,28 +895,28 @@ export default function CrmDashboardPage() {
             >
               <div className="p-4 border-b border-slate-700/40 flex items-center gap-2">
                 <Users size={18} className="text-yellow-400" />
-                <h3 className="text-white font-bold">کاربران در خطر ریزش</h3>
-                <span className="mr-auto text-xs text-slate-400">
+                <h3 className="text-slate-900 font-bold">کاربران در خطر ریزش</h3>
+                <span className="mr-auto text-xs text-slate-500">
                   (فعال در ۳۰ روز، غیرفعال ۱۴+ روز)
                 </span>
               </div>
               {churnUsers.length === 0 ? (
                 <div className="p-8 flex flex-col items-center gap-2">
                   <CheckCircle size={32} className="text-green-400" />
-                  <p className="text-slate-400">کاربری در خطر ریزش نیست</p>
+                  <p className="text-slate-500">کاربری در خطر ریزش نیست</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-slate-700/40">
-                        <th className="text-right text-slate-400 font-bold px-4 py-3 text-xs">
+                        <th className="text-right text-slate-500 font-bold px-4 py-3 text-xs">
                           کاربر
                         </th>
-                        <th className="text-right text-slate-400 font-bold px-4 py-3 text-xs">
+                        <th className="text-right text-slate-500 font-bold px-4 py-3 text-xs">
                           آخرین فعالیت
                         </th>
-                        <th className="text-right text-slate-400 font-bold px-4 py-3 text-xs">
+                        <th className="text-right text-slate-500 font-bold px-4 py-3 text-xs">
                           تعداد اقدام
                         </th>
                       </tr>
@@ -928,10 +928,10 @@ export default function CrmDashboardPage() {
                           className="border-b border-slate-700/20 hover:bg-slate-700/20 transition-colors cursor-pointer"
                           onClick={() => setSelectedChurnUser(u)}
                         >
-                          <td className="px-4 py-3 text-slate-300 font-mono text-xs">
+                          <td className="px-4 py-3 text-slate-600 font-mono text-xs">
                             {u.user_id?.slice(0, 8)}...
                           </td>
-                          <td className="px-4 py-3 text-slate-400 text-xs">
+                          <td className="px-4 py-3 text-slate-500 text-xs">
                             {u.last_active
                               ? new Date(u.last_active).toLocaleDateString(
                                   "fa-IR",
@@ -960,7 +960,7 @@ export default function CrmDashboardPage() {
                 className="rounded-2xl p-6 border border-slate-700/40"
                 style={{ background: "rgba(15,23,42,0.7)" }}
               >
-                <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                <h3 className="text-slate-900 font-bold mb-4 flex items-center gap-2">
                   <Zap size={18} className="text-yellow-400" />
                   فعال‌ترین API Endpoints
                 </h3>
@@ -971,16 +971,16 @@ export default function CrmDashboardPage() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-slate-700/40">
-                          <th className="text-right text-slate-400 font-bold py-2 text-xs">
+                          <th className="text-right text-slate-500 font-bold py-2 text-xs">
                             Endpoint
                           </th>
-                          <th className="text-right text-slate-400 font-bold py-2 px-4 text-xs">
+                          <th className="text-right text-slate-500 font-bold py-2 px-4 text-xs">
                             تعداد
                           </th>
-                          <th className="text-right text-slate-400 font-bold py-2 px-4 text-xs">
+                          <th className="text-right text-slate-500 font-bold py-2 px-4 text-xs">
                             میانگین ms
                           </th>
-                          <th className="text-right text-slate-400 font-bold py-2 text-xs">
+                          <th className="text-right text-slate-500 font-bold py-2 text-xs">
                             وضعیت
                           </th>
                         </tr>
@@ -994,7 +994,7 @@ export default function CrmDashboardPage() {
                               key={i}
                               className="border-b border-slate-700/20 hover:bg-slate-700/10"
                             >
-                              <td className="py-2.5 text-slate-300 font-mono text-xs max-w-xs truncate">
+                              <td className="py-2.5 text-slate-600 font-mono text-xs max-w-xs truncate">
                                 {e.endpoint}
                               </td>
                               <td className="py-2.5 px-4 text-orange-400 font-bold text-xs">
@@ -1041,11 +1041,11 @@ export default function CrmDashboardPage() {
                     const total = s?.totalEvents || 1;
                     const ratio = Math.round(total/Math.max(sessions,1)*10)/10;
                     setInfoModal({ title: "جلسات یکتا", content: `تعداد جلسات یکتا (Unique Sessions) نشان می‌دهد چند نفر مجزا از پلتفرم استفاده کرده‌اند.\n\n📊 آمار جاری:\n• جلسات یکتا: ${sessions.toLocaleString()}\n• میانگین رویداد به ازای هر جلسه: ${ratio}\n\nافزایش این عدد نشان‌دهنده رشد کاربران فعال است.` });
-                  }} className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-all"><Eye size={13} /></button>
+                  }} className="p-1 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"><Eye size={13} /></button>
                   </div>
                   <div>
-                    <p className="text-white font-black text-2xl">{(s?.uniqueSessions || 0).toLocaleString()}</p>
-                    <p className="text-slate-400 text-xs mt-0.5">جلسات یکتا</p>
+                    <p className="text-slate-900 font-black text-2xl">{(s?.uniqueSessions || 0).toLocaleString()}</p>
+                    <p className="text-slate-500 text-xs mt-0.5">جلسات یکتا</p>
                   </div>
                 </div>
 
@@ -1056,11 +1056,11 @@ export default function CrmDashboardPage() {
                     const rt = s?.avgResponseTime || 0;
                     const status = rt < 500 ? "✅ عالی" : rt < 2000 ? "⚠️ متوسط" : "🔴 کند";
                     setInfoModal({ title: "میانگین زمان پاسخ", content: `میانگین زمان پاسخ API نشان می‌دهد سرور چه مدت به درخواست‌ها پاسخ می‌دهد.\n\n⏱️ وضعیت جاری:\n• زمان فعلی: ${rt}ms (${status})\n• استاندارد مطلوب: زیر ۵۰۰ms\n• محدوده قابل قبول: ۵۰۰-۲۰۰۰ms\n\nمقادیر بالای ۲۰۰۰ms نیاز به بررسی سرور یا پایگاه داده دارند.` });
-                  }} className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-all"><Eye size={13} /></button>
+                  }} className="p-1 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"><Eye size={13} /></button>
                   </div>
                   <div>
-                    <p className="text-white font-black text-2xl">{s?.avgResponseTime || 0}ms</p>
-                    <p className="text-slate-400 text-xs mt-0.5">میانگین پاسخ</p>
+                    <p className="text-slate-900 font-black text-2xl">{s?.avgResponseTime || 0}ms</p>
+                    <p className="text-slate-500 text-xs mt-0.5">میانگین پاسخ</p>
                   </div>
                 </div>
 
@@ -1073,11 +1073,11 @@ export default function CrmDashboardPage() {
                     const rate = s?.errorRate || 0;
                     const errStatus = rate < 2 ? "✅ طبیعی" : rate < 5 ? "⚠️ نیاز به توجه" : "🔴 بحرانی";
                     setInfoModal({ title: "خطاهای API", content: `تعداد خطاهای API نشان می‌دهد چه تعداد درخواست به خطا منجر شده است.\n\n❌ آمار جاری:\n• تعداد خطاها: ${errors.toLocaleString()}\n• از کل ${total.toLocaleString()} رویداد\n• نرخ خطا: ${rate}٪ (${errStatus})\n\nخطاهای ۴xx مشکل کلاینت و خطاهای ۵xx مشکل سرور هستند.` });
-                  }} className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-all"><Eye size={13} /></button>
+                  }} className="p-1 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"><Eye size={13} /></button>
                   </div>
                   <div>
-                    <p className="text-white font-black text-2xl">{(s?.errorEvents || 0).toLocaleString()}</p>
-                    <p className="text-slate-400 text-xs mt-0.5">خطاهای API</p>
+                    <p className="text-slate-900 font-black text-2xl">{(s?.errorEvents || 0).toLocaleString()}</p>
+                    <p className="text-slate-500 text-xs mt-0.5">خطاهای API</p>
                   </div>
                 </div>
 
@@ -1088,11 +1088,11 @@ export default function CrmDashboardPage() {
                     const rate = 100 - (s?.errorRate || 0);
                     const rateStatus = rate >= 98 ? "✅ عالی" : rate >= 95 ? "⚠️ قابل قبول" : "🔴 نیاز به بررسی فوری";
                     setInfoModal({ title: "نرخ موفقیت", content: `نرخ موفقیت درصد درخواست‌هایی است که بدون خطا پاسخ دریافت کرده‌اند.\n\n✅ آمار جاری:\n• نرخ موفقیت: ${rate}٪ (${rateStatus})\n• معیار ایده‌آل: بالای ۹۸٪\n• معیار قابل قبول: ۹۵-۹۸٪\n\nاین معیار یکی از مهم‌ترین شاخص‌های سلامت فنی پلتفرم است.` });
-                  }} className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-all"><Eye size={13} /></button>
+                  }} className="p-1 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10 transition-all"><Eye size={13} /></button>
                   </div>
                   <div>
-                    <p className="text-white font-black text-2xl">{100 - (s?.errorRate || 0)}%</p>
-                    <p className="text-slate-400 text-xs mt-0.5">نرخ موفقیت</p>
+                    <p className="text-slate-900 font-black text-2xl">{100 - (s?.errorRate || 0)}%</p>
+                    <p className="text-slate-500 text-xs mt-0.5">نرخ موفقیت</p>
                   </div>
                 </div>
               </div>

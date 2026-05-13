@@ -347,7 +347,7 @@ export default function TestsCatalogPage() {
       <div className="max-w-2xl mx-auto px-4 pt-4">
 
         {/* بازگشت */}
-        <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm mb-5 transition-colors">
+        <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 text-sm mb-5 transition-colors">
           <ArrowRight size={16}/> بازگشت
         </Link>
 
@@ -359,8 +359,8 @@ export default function TestsCatalogPage() {
               <Brain size={22} className="text-orange-400"/>
             </div>
             <div>
-              <h1 className="text-xl font-black text-white">تست‌های روان‌شناختی راوی</h1>
-              <p className="text-xs text-slate-400">۲۵ تست علمی در ۳ لایه تخصصی</p>
+              <h1 className="text-xl font-black text-slate-900">تست‌های روان‌شناختی راوی</h1>
+              <p className="text-xs text-slate-500">۲۵ تست علمی در ۳ لایه تخصصی</p>
             </div>
           </div>
 
@@ -373,7 +373,7 @@ export default function TestsCatalogPage() {
             ].map((s) => (
               <div key={s.label} className="rounded-2xl p-3 text-center" style={{ background: s.bg, border: `1px solid ${s.bg.replace("0.1","0.2")}` }}>
                 <p className="text-2xl font-black" style={{ color: s.color }}>{s.value}</p>
-                <p className="text-[10px] text-slate-400 mt-0.5">{s.label}</p>
+                <p className="text-[10px] text-slate-500 mt-0.5">{s.label}</p>
               </div>
             ))}
           </div>
@@ -391,7 +391,7 @@ export default function TestsCatalogPage() {
                 className="flex-1 min-w-[100px] py-2.5 px-3 rounded-xl text-xs font-black transition-all whitespace-nowrap"
                 style={isActive
                   ? { background: pi.color, color: "white", boxShadow: `0 4px 14px ${pi.color}44` }
-                  : { background: "rgba(255,255,255,0.05)", color: "#94a3b8", border: "1px solid rgba(255,255,255,0.08)" }
+                  : { background: "rgba(0,0,0,0.04)", color: "#94a3b8", border: "1px solid rgba(0,0,0,0.06)" }
                 }
               >
                 لایه {phase === 1 ? "۱" : phase === 2 ? "۲" : "۳"}
@@ -408,7 +408,7 @@ export default function TestsCatalogPage() {
         >
           <div>
             <p className="font-black text-sm" style={{ color: info.color }}>{info.title}</p>
-            <p className="text-xs text-slate-400 mt-0.5">{info.count} تست · {info.subtitle}</p>
+            <p className="text-xs text-slate-500 mt-0.5">{info.count} تست · {info.subtitle}</p>
           </div>
           {activePhase === 3 && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-lg" style={{ background: "rgba(147,51,234,0.15)" }}>
@@ -428,9 +428,9 @@ export default function TestsCatalogPage() {
         {/* نکته انتهایی */}
         <div
           className="mt-6 rounded-2xl p-4"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }}
         >
-          <p className="text-xs text-slate-400 leading-relaxed text-center">
+          <p className="text-xs text-slate-500 leading-relaxed text-center">
             <Sparkles size={12} className="inline text-orange-400 ml-1"/>
             نتایج تست‌ها برای بهبود مچینگ و پیشنهاد محتوا استفاده می‌شود. اطلاعات شخصی شما محفوظ است.
           </p>

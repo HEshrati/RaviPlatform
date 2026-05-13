@@ -137,7 +137,7 @@ export default function WalletPage() {
       {/* ── فرم شارژ ── */}
       {showChargeForm && (
         <div className="app-card rounded-3xl p-6">
-          <h3 className="font-black text-white mb-4">شارژ کیف پول</h3>
+          <h3 className="font-black text-slate-900 mb-4">شارژ کیف پول</h3>
           <form onSubmit={handleCharge} className="space-y-4">
             {/* مبالغ پیش‌فرض */}
             <div className="grid grid-cols-2 gap-2">
@@ -149,7 +149,7 @@ export default function WalletPage() {
                   className={`py-2.5 rounded-xl font-bold text-sm transition-all border ${
                     chargeAmount === preset
                       ? "bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/30"
-                      : "bg-slate-800 text-slate-300 border-slate-700 hover:border-orange-500/50"
+                      : "bg-slate-800 text-slate-600 border-slate-700 hover:border-orange-500/50"
                   }`}
                 >
                   {formatAmount(preset)} تومان
@@ -159,7 +159,7 @@ export default function WalletPage() {
 
             {/* مبلغ دلخواه */}
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">یا مبلغ دلخواه وارد کنید</label>
+              <label className="block text-sm text-slate-500 mb-1.5">یا مبلغ دلخواه وارد کنید</label>
               <div className="relative">
                 <input
                   type="number"
@@ -167,9 +167,9 @@ export default function WalletPage() {
                   step={10000}
                   value={chargeAmount}
                   onChange={(e) => setChargeAmount(Number(e.target.value))}
-                  className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 pr-16"
+                  className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-orange-500 pr-16"
                 />
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs">
                   تومان
                 </span>
               </div>
@@ -203,7 +203,7 @@ export default function WalletPage() {
 
       {/* ── تاریخچه تراکنش‌ها ── */}
       <div className="app-card rounded-3xl p-5">
-        <h3 className="font-black text-white mb-4">تاریخچه تراکنش‌ها</h3>
+        <h3 className="font-black text-slate-900 mb-4">تاریخچه تراکنش‌ها</h3>
 
         {transactions.length === 0 ? (
           <div className="text-center py-8">
@@ -235,7 +235,7 @@ export default function WalletPage() {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white truncate">
+                  <p className="text-sm font-bold text-slate-900 truncate">
                     {tx.description}
                   </p>
                   <p className="text-xs text-slate-500 mt-0.5">

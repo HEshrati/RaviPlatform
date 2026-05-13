@@ -23,8 +23,8 @@ export default function CompletePage() {
     <div className="min-h-screen flex items-center justify-center p-6" dir="rtl">
       <div className="max-w-md w-full text-center">
         <div className="text-7xl mb-6">✅</div>
-        <h1 className="text-3xl font-black text-white mb-4">درخواست ثبت شد</h1>
-        <p className="text-slate-400 text-sm leading-relaxed mb-8">
+        <h1 className="text-3xl font-black text-slate-900 mb-4">درخواست ثبت شد</h1>
+        <p className="text-slate-500 text-sm leading-relaxed mb-8">
           اطلاعات و دغدغه‌های شما با موفقیت ثبت شدند.
           {session?.service_type === "psychologist"
             ? " روانشناس شما به زودی با شما در تماس خواهد بود."
@@ -38,11 +38,11 @@ export default function CompletePage() {
         </div>
         <div className="flex gap-3">
           <Link href="/dashboard"
-            className="flex-1 py-3 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm transition-all">
+            className="flex-1 py-3 rounded-2xl bg-orange-500 hover:bg-orange-600 text-slate-900 font-bold text-sm transition-all">
             بازگشت به داشبورد
           </Link>
           <Link href="/dashboard/booking-flow"
-            className="flex-1 py-3 rounded-2xl border border-white/10 text-slate-300 hover:bg-white/5 font-bold text-sm transition-all">
+            className="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm transition-all">
             درخواست جدید
           </Link>
         </div>

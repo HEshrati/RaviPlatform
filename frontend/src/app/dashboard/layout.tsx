@@ -156,7 +156,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <main
         className="flex-1 min-w-0 min-h-screen overflow-y-auto relative z-10"
-        style={{ pointerEvents: "auto" }}
+        style={{ pointerEvents: "auto", background: "#ffffff" }}
       >
         <div className="p-4 lg:p-6">{children}</div>
       </main>

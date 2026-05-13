@@ -58,15 +58,15 @@ export default function TopicPage() {
     <div className="min-h-screen p-6" dir="rtl">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
-          <button onClick={() => router.back()} className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/5">
+          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-50">
             ←
           </button>
           <div>
             <p className="text-slate-500 text-xs mb-1">مرحله ۱ از ۳</p>
-            <h1 className="text-2xl font-black text-white">موضوع مشاوره</h1>
+            <h1 className="text-2xl font-black text-slate-900">موضوع مشاوره</h1>
           </div>
         </div>
-        <p className="text-slate-400 mb-6 text-sm">چه چیزی ذهنتان را درگیر کرده؟</p>
+        <p className="text-slate-500 mb-6 text-sm">چه چیزی ذهنتان را درگیر کرده؟</p>
 
         {loading ? (
           <div className="text-slate-500 text-center py-10">در حال بارگذاری...</div>
@@ -79,12 +79,12 @@ export default function TopicPage() {
                 className={`p-4 rounded-2xl border text-right transition-all ${
                   selected === t.slug
                     ? "border-orange-500 bg-orange-500/10"
-                    : "border-white/10 hover:border-orange-500/30"
+                    : "border-slate-200 hover:border-orange-500/30"
                 }`}
-                style={{ background: selected === t.slug ? undefined : "rgba(255,255,255,0.03)" }}
+                style={{ background: selected === t.slug ? undefined : "rgba(0,0,0,0.02)" }}
               >
                 <div className="text-3xl mb-2">{t.icon}</div>
-                <div className="font-bold text-white text-sm">{t.name}</div>
+                <div className="font-bold text-slate-900 text-sm">{t.name}</div>
                 {t.description && (
                   <div className="text-slate-500 text-xs mt-1 leading-relaxed">{t.description}</div>
                 )}
@@ -97,7 +97,7 @@ export default function TopicPage() {
           onClick={next}
           disabled={!selected || submitting}
           className={`w-full mt-8 py-4 rounded-2xl font-black text-base transition-all ${
-            selected ? "bg-orange-500 hover:bg-orange-600 text-white" : "bg-white/5 text-slate-600 cursor-not-allowed"
+            selected ? "bg-orange-500 hover:bg-orange-600 text-slate-900" : "bg-slate-50 text-slate-600 cursor-not-allowed"
           }`}
         >
           {submitting ? "در حال ثبت..." : "مرحله بعد →"}

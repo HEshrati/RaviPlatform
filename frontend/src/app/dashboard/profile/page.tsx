@@ -41,9 +41,9 @@ import {
 
 // ─── Style ──────────────────────────────────────────────────────────
 const CARD = {
-  background: "linear-gradient(145deg, #1a1a2e, #16213e, #0f3460)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  boxShadow: "0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
+  background: "linear-gradient(145deg, #1B2A4A, #132038)",
+  border: "1px solid rgba(0,0,0,0.06)",
+  boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
 };
 
 interface TestResult {
@@ -267,19 +267,10 @@ export default function ProfilePage() {
       {/* ─── Hero Card ─── */}
       <div className="rounded-3xl p-6 relative overflow-hidden" style={CARD}>
         <div
-          className="absolute top-0 left-0 w-48 h-48 rounded-full opacity-20"
+          className="absolute top-0 left-0 w-40 h-40 rounded-full opacity-15"
           style={{
-            background: "radial-gradient(circle,#FF6B00,#FF9A3C,transparent)",
+            background: "radial-gradient(circle,#FF6B00,transparent)",
             transform: "translate(-30%,-30%)",
-            filter: "blur(20px)",
-          }}
-        />
-        <div
-          className="absolute bottom-0 right-0 w-32 h-32 rounded-full opacity-10"
-          style={{
-            background: "radial-gradient(circle,#6366f1,transparent)",
-            transform: "translate(20%,20%)",
-            filter: "blur(16px)",
           }}
         />
         <div className="relative z-10">
@@ -295,7 +286,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <h1 className="text-xl font-black text-white truncate">
+                <h1 className="text-xl font-black text-slate-900 truncate">
                   {userName}
                 </h1>
                 {isAdmin && (
@@ -325,13 +316,13 @@ export default function ProfilePage() {
                 )}
               </div>
               {mobile && (
-                <div className="flex items-center gap-1.5 text-slate-400 text-xs mb-1">
+                <div className="flex items-center gap-1.5 text-slate-500 text-xs mb-1">
                   <Phone size={11} />
                   {mobile}
                 </div>
               )}
               {profile?.city && (
-                <div className="flex items-center gap-1.5 text-slate-400 text-xs">
+                <div className="flex items-center gap-1.5 text-slate-500 text-xs">
                   <MapPin size={11} />
                   {profile.city}
                   {profile.neighborhood && ` — ${profile.neighborhood}`}
@@ -342,11 +333,11 @@ export default function ProfilePage() {
               href="/dashboard/complete-profile"
               className="p-2 rounded-xl transition-all flex-shrink-0"
               style={{
-                background: "rgba(255,255,255,0.07)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(0,0,0,0.05)",
+                border: "1px solid rgba(0,0,0,0.08)",
               }}
             >
-              <Edit3 size={16} className="text-slate-300" />
+              <Edit3 size={16} className="text-slate-600" />
             </Link>
           </div>
 
@@ -354,7 +345,7 @@ export default function ProfilePage() {
           {profile?.completionPercentage !== undefined && (
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs text-slate-400">تکمیل پروفایل</span>
+                <span className="text-xs text-slate-500">تکمیل پروفایل</span>
                 <span className="text-xs font-black text-orange-400">
                   {profile.completionPercentage}٪
                 </span>
@@ -397,12 +388,12 @@ export default function ProfilePage() {
         <div className="rounded-3xl p-5" style={CARD}>
           <div className="flex items-center gap-2 mb-3">
             <Brain size={18} className="text-purple-400" />
-            <h3 className="font-black text-white">نتیجه آخرین تست</h3>
+            <h3 className="font-black text-slate-900">نتیجه آخرین تست</h3>
           </div>
           <p className="text-2xl font-black text-orange-400">
             {tests[0].main_result}
           </p>
-          <p className="text-slate-400 text-sm mt-1">{tests[0].test_name}</p>
+          <p className="text-slate-500 text-sm mt-1">{tests[0].test_name}</p>
         </div>
       )}
 
@@ -444,7 +435,7 @@ function MbtiCard({
           <div className="w-9 h-9 bg-purple-500/20 rounded-xl flex items-center justify-center">
             <Brain size={16} className="text-purple-400" />
           </div>
-          <h3 className="font-black text-white">شخصیت من</h3>
+          <h3 className="font-black text-slate-900">شخصیت من</h3>
           <span className="text-xs text-slate-500 mr-auto">{testName}</span>
         </div>
 
@@ -472,7 +463,7 @@ function MbtiCard({
         </div>
 
         {info && (
-          <p className="text-slate-300 text-sm leading-relaxed mb-5">
+          <p className="text-slate-600 text-sm leading-relaxed mb-5">
             {info.desc}
           </p>
         )}
@@ -519,7 +510,7 @@ function MbtiCard({
                 </div>
                 <div
                   className="h-2 rounded-full relative overflow-hidden"
-                  style={{ background: "rgba(255,255,255,0.05)" }}
+                  style={{ background: "rgba(0,0,0,0.04)" }}
                 >
                   <div
                     className="absolute top-0 right-0 h-full"
@@ -548,8 +539,8 @@ function MbtiCard({
           href="/dashboard/personality-test?retake=true"
           className="mt-5 w-full py-2.5 rounded-2xl text-sm font-black text-white text-center inline-block transition-all"
           style={{
-            background: "rgba(255,255,255,0.07)",
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: "rgba(0,0,0,0.05)",
+            border: "1px solid rgba(0,0,0,0.08)",
           }}
         >
           <RefreshCw size={13} className="inline ml-1.5" />
@@ -576,13 +567,13 @@ function NoTestCard() {
           <Brain size={22} className="text-orange-400" />
         </div>
         <div>
-          <h3 className="font-black text-white">شخصیت خودت رو بشناس</h3>
-          <p className="text-slate-400 text-xs mt-0.5">
+          <h3 className="font-black text-slate-900">شخصیت خودت رو بشناس</h3>
+          <p className="text-slate-500 text-xs mt-0.5">
             هنوز تست شخصیت ندادی
           </p>
         </div>
       </div>
-      <p className="text-slate-300 text-sm leading-relaxed mb-4">
+      <p className="text-slate-600 text-sm leading-relaxed mb-4">
         با یک تست کوتاه ۱۰ دقیقه‌ای، ابعاد شخصیتی خودت رو بشناس. این به ما کمک
         می‌کنه همنشینی‌ها و گروه‌های مناسب‌تری برات پیشنهاد بدیم.
       </p>
@@ -642,7 +633,7 @@ function StatsGrid({ stats }: { stats: UserStats }) {
             style={{ background: color }}
           />
           <div className="flex items-center justify-between mb-2">
-            <span className="text-2xl font-black text-white">{value}</span>
+            <span className="text-2xl font-black text-slate-900">{value}</span>
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center"
               style={{ background: `${color}25` }}
@@ -671,7 +662,7 @@ function TestHistory({ tests }: { tests: TestResult[] }) {
           <div className="w-8 h-8 bg-purple-500/20 rounded-xl flex items-center justify-center">
             <Trophy size={14} className="text-purple-400" />
           </div>
-          <h3 className="font-black text-white">تاریخچه تست‌ها</h3>
+          <h3 className="font-black text-slate-900">تاریخچه تست‌ها</h3>
         </div>
         <Link
           href="/dashboard/personality-test?retake=true"
@@ -686,15 +677,15 @@ function TestHistory({ tests }: { tests: TestResult[] }) {
             key={t.id}
             className="flex items-center gap-3 p-3 rounded-2xl"
             style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.07)",
+              background: "rgba(0,0,0,0.03)",
+              border: "1px solid rgba(0,0,0,0.05)",
             }}
           >
             <div className="w-9 h-9 rounded-xl bg-orange-500/15 flex items-center justify-center flex-shrink-0">
               <Brain size={14} className="text-orange-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-white truncate">
+              <p className="text-sm font-bold text-slate-900 truncate">
                 {t.test_name}
               </p>
               <p className="text-[10px] text-slate-500 mt-0.5">
@@ -750,7 +741,7 @@ function ProfileDetails({ profile }: { profile: UserProfile | null }) {
           <div className="w-8 h-8 bg-orange-500/20 rounded-xl flex items-center justify-center">
             <Sparkles size={14} className="text-orange-400" />
           </div>
-          <h3 className="font-black text-white">جزئیات پروفایل</h3>
+          <h3 className="font-black text-slate-900">جزئیات پروفایل</h3>
         </div>
         <Link
           href="/dashboard/complete-profile"
@@ -764,8 +755,8 @@ function ProfileDetails({ profile }: { profile: UserProfile | null }) {
         <div
           className="rounded-2xl p-3 mb-4"
           style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.07)",
+            background: "rgba(0,0,0,0.03)",
+            border: "1px solid rgba(0,0,0,0.05)",
           }}
         >
           <p className="text-[10px] text-slate-500 font-bold mb-1">درباره من</p>
@@ -796,14 +787,14 @@ function ProfileDetails({ profile }: { profile: UserProfile | null }) {
               key={label}
               className="flex items-center gap-2 p-3 rounded-xl"
               style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.07)",
+                background: "rgba(0,0,0,0.03)",
+                border: "1px solid rgba(0,0,0,0.05)",
               }}
             >
-              <Icon size={13} className="text-slate-400 flex-shrink-0" />
+              <Icon size={13} className="text-slate-500 flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <p className="text-[10px] text-slate-500 font-bold">{label}</p>
-                <p className="text-xs font-bold text-white truncate">{value}</p>
+                <p className="text-xs font-bold text-slate-900 truncate">{value}</p>
               </div>
             </div>
           ))}

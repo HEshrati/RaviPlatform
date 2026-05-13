@@ -52,10 +52,10 @@ export default function TherapistDetailPage({ params }: { params: Promise<{ id: 
               {therapist.name.slice(0, 2)}
             </div>
             <div>
-              <h2 className="font-black text-white text-xl">{therapist.name}</h2>
+              <h2 className="font-black text-slate-900 text-xl">{therapist.name}</h2>
               <div className="flex items-center gap-2 mt-1">
                 <Star size={14} className="text-yellow-400 fill-yellow-400" />
-                <span className="text-white">{therapist.rating}</span>
+                <span className="text-slate-900">{therapist.rating}</span>
               </div>
               {therapist.matchScore && <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400"><Zap size={10} /> {therapist.matchScore}٪ تطابق</div>}
             </div>

@@ -184,7 +184,7 @@ export default function RecommendationsPage() {
                 <h2 className="text-2xl font-black text-white leading-tight">
                   جهان خلاقیت
                 </h2>
-                <p className="text-slate-400 text-sm mt-1">
+                <p className="text-slate-500 text-sm mt-1">
                   {filtered.length} رویداد جدید بر اساس علایق و الگوریتم تطابق برای شما پیدا شد.
                 </p>
               </div>
@@ -211,7 +211,7 @@ export default function RecommendationsPage() {
               </div>
               {userCity && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
-                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", color: "#94a3b8" }}>
+                  style={{ background: "rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.08)", color: "#94a3b8" }}>
                   <MapPin size={11} />
                   {userCity}
                 </div>
@@ -259,7 +259,7 @@ export default function RecommendationsPage() {
           <div className="text-center py-20">
             <div className="text-5xl mb-4">🔍</div>
             <p className="text-slate-600 font-bold text-base mb-1">رویداد پیشنهادی یافت نشد</p>
-            <p className="text-slate-400 text-sm">فیلتر دیگری را امتحان کنید</p>
+            <p className="text-slate-500 text-sm">فیلتر دیگری را امتحان کنید</p>
           </div>
         ) : (
           <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
@@ -346,7 +346,7 @@ export default function RecommendationsPage() {
                             <Users size={9} />
                             فقط {remaining} جای خالی
                           </span>
-                          <span className="text-slate-400">{Math.round((ev.reserved / ev.capacity) * 100)}٪</span>
+                          <span className="text-slate-500">{Math.round((ev.reserved / ev.capacity) * 100)}٪</span>
                         </div>
                         <div className="h-1.5 bg-orange-100 rounded-full overflow-hidden">
                           <div className="h-full bg-orange-500 rounded-full transition-all"
@@ -369,7 +369,7 @@ export default function RecommendationsPage() {
                           مشاهده
                         </Link>
                       ) : (
-                        <div className="flex-1 text-center py-2.5 rounded-2xl text-sm font-bold text-slate-400"
+                        <div className="flex-1 text-center py-2.5 rounded-2xl text-sm font-bold text-slate-500"
                           style={{ background: "rgba(0,0,0,0.04)" }}>
                           تکمیل
                         </div>

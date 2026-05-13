@@ -58,7 +58,7 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-black text-white flex items-center gap-2">
+          <h1 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Bell size={20} className="text-orange-400" />
             اعلان‌ها
             {unread > 0 && (
@@ -88,10 +88,10 @@ export default function NotificationsPage() {
 
       {/* List */}
       {notifs.length === 0 ? (
-        <div className="rounded-3xl p-10 text-center border border-white/8"
-          style={{ background: "rgba(255,255,255,0.03)" }}>
+        <div className="rounded-3xl p-10 text-center border border-slate-200"
+          style={{ background: "rgba(0,0,0,0.02)" }}>
           <div className="text-5xl mb-3">🔔</div>
-          <p className="text-white font-bold">اعلانی وجود ندارد</p>
+          <p className="text-slate-900 font-bold">اعلانی وجود ندارد</p>
           <p className="text-slate-500 text-xs mt-1">اعلان‌های جدید اینجا نمایش داده می‌شوند</p>
         </div>
       ) : (
@@ -101,10 +101,10 @@ export default function NotificationsPage() {
               key={n.id}
               onClick={() => markRead(n.id)}
               className="rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.01]
-                         border border-white/8"
+                         border border-slate-200"
               style={{
-                background: n.read ? "rgba(255,255,255,0.03)" : "rgba(255,107,0,0.05)",
-                borderColor: n.read ? "rgba(255,255,255,0.07)" : "rgba(255,107,0,0.2)",
+                background: n.read ? "rgba(0,0,0,0.02)" : "rgba(255,107,0,0.05)",
+                borderColor: n.read ? "rgba(0,0,0,0.05)" : "rgba(255,107,0,0.2)",
               }}
             >
               <div className="flex items-start gap-3">
@@ -118,20 +118,20 @@ export default function NotificationsPage() {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-black text-sm text-white leading-tight">{n.title}</h3>
+                    <h3 className="font-black text-sm text-slate-900 leading-tight">{n.title}</h3>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       {!n.read && (
                         <div className="w-2 h-2 bg-orange-500 rounded-full" />
                       )}
                       <button
                         onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
-                        className="text-slate-600 hover:text-slate-300 transition-colors"
+                        className="text-slate-600 hover:text-slate-600 transition-colors"
                       >
                         <X size={13} />
                       </button>
                     </div>
                   </div>
-                  <p className="text-slate-400 text-xs mt-1 leading-relaxed">{n.message}</p>
+                  <p className="text-slate-500 text-xs mt-1 leading-relaxed">{n.message}</p>
                   <p className="text-slate-600 text-[10px] mt-1.5">{n.time}</p>
                 </div>
               </div>

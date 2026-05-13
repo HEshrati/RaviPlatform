@@ -95,7 +95,7 @@ export default function MyTherapistLandingPage() {
             <h2 className="text-2xl lg:text-3xl font-black text-white leading-tight mb-2">
               سلام {userName}، اینجا فضای امن شماست 💜
             </h2>
-            <p className="text-slate-300 text-sm lg:text-base leading-relaxed max-w-2xl">
+            <p className="text-slate-600 text-sm lg:text-base leading-relaxed max-w-2xl">
               «دوست روانشناس من» بستری حرفه‌ای و محرمانه برای ارتباط با
               روانشناسان مورد تأیید راوی است.
             </p>

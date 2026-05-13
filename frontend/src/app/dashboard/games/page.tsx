@@ -140,12 +140,12 @@ export default function GamesPage() {
           {/* Points Card */}
           <div className="bg-gradient-to-br from-raavi-orange to-raavi-600 rounded-3xl p-6 mb-8 shadow-2xl flex items-center justify-between">
             <div>
-              <p className="text-white/80 text-sm mb-1">امتیاز شما</p>
-              <p className="text-4xl font-black text-white font-estedad">
+              <p className="text-slate-900/80 text-sm mb-1">امتیاز شما</p>
+              <p className="text-4xl font-black text-slate-900 font-estedad">
                 ۱,۲۵۰
               </p>
             </div>
-            <Trophy className="text-white" size={48} />
+            <Trophy className="text-slate-900" size={48} />
           </div>
 
           {/* Games Grid */}
@@ -280,7 +280,7 @@ export default function GamesPage() {
 
         {/* Question Card */}
         <div className="bg-navy-800 rounded-3xl p-8 mb-6">
-          <h2 className="text-2xl font-black text-white mb-8 font-estedad text-center">
+          <h2 className="text-2xl font-black text-slate-900 mb-8 font-estedad text-center">
             {quizQuestions[currentQuestion].question}
           </h2>
 
@@ -302,7 +302,7 @@ export default function GamesPage() {
                         ? "bg-green-500 text-white"
                         : isSelected
                           ? "bg-red-500 text-white"
-                          : "bg-navy-700 text-slate-400"
+                          : "bg-navy-700 text-slate-500"
                       : "bg-navy-700 text-white hover:bg-navy-600"
                   }`}
                 >

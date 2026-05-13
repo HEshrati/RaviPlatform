@@ -141,7 +141,7 @@ function InnerIntakePage() {
                     className="relative rounded-2xl p-3 text-right transition-all"
                     style={active ? { background: "rgba(255,107,0,0.12)", border: "1.5px solid #FF6B00" } : { background: "rgba(0,0,0,0.02)", border: "1.5px solid rgba(0,0,0,0.06)" }}
                   >
-                    {active && <div className="absolute top-2 left-2 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} className="text-white" /></div>}
+                    {active && <div className="absolute top-2 left-2 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} className="text-slate-900" /></div>}
                     <div className="text-2xl mb-1">{opt.emoji}</div>
                     <div className="font-bold text-sm" style={{ color: active ? "#9a3412" : "#334155" }}>{opt.label}</div>
                   </button>
@@ -233,9 +233,9 @@ function InnerIntakePage() {
             <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 rounded-2xl border">مرحله قبل</button>
           )}
           {step < TOTAL_STEPS ? (
-            <button onClick={() => canGoNext() && setStep(s => s + 1)} disabled={!canGoNext()} className="flex-1 py-3 rounded-2xl text-white bg-orange-500 disabled:opacity-40">مرحله بعد <ChevronLeft size={16} className="inline" /></button>
+            <button onClick={() => canGoNext() && setStep(s => s + 1)} disabled={!canGoNext()} className="flex-1 py-3 rounded-2xl text-slate-900 bg-orange-500 disabled:opacity-40">مرحله بعد <ChevronLeft size={16} className="inline" /></button>
           ) : (
-            <button onClick={handleSubmit} disabled={submitting} className="flex-1 py-3 rounded-2xl text-white bg-orange-500">
+            <button onClick={handleSubmit} disabled={submitting} className="flex-1 py-3 rounded-2xl text-slate-900 bg-orange-500">
               {submitting ? <Loader2 size={16} className="animate-spin inline" /> : "ارسال و مشاهده پیشنهادات"} <ArrowLeft size={16} className="inline" />
             </button>
           )}

@@ -405,7 +405,7 @@ const STATUS_CONFIG = {
   completed: { label: "تکمیل شده ✓", color: "#22c55e", bg: "rgba(34,197,94,0.15)", border: "rgba(34,197,94,0.3)", locked: false },
 };
 
-const CARD = { background: "linear-gradient(145deg, #1B2A4A, #132038)", border: "1px solid rgba(255,255,255,0.08)" };
+const CARD = { background: "linear-gradient(145deg, #1B2A4A, #132038)", border: "1px solid rgba(0,0,0,0.06)" };
 
 export default function TestsCatalogPage() {
   const { state } = useApp();
@@ -437,13 +437,13 @@ export default function TestsCatalogPage() {
               <Brain size={22} className="text-purple-400" />
             </div>
             <div>
-              <h1 className="text-xl font-black text-white">آزمون‌های روانشناسی</h1>
+              <h1 className="text-xl font-black text-slate-900">آزمون‌های روانشناسی</h1>
               <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
                 {availableCount} تست فعال · {TESTS.length} تست در کتابخانه
               </p>
             </div>
           </div>
-          <p className="text-sm text-slate-400 leading-6">
+          <p className="text-sm text-slate-500 leading-6">
             نتایج تست‌ها به روانشناس یا مشاورت نمایش داده می‌شود و برای ارائه خدمات شخصی‌سازی‌شده استفاده می‌گردد.
           </p>
         </div>
@@ -456,7 +456,7 @@ export default function TestsCatalogPage() {
             { value: TESTS.length - availableCount - completedCount, label: "در راه", color: "#94a3b8" },
           ].map(({ value, label, color }) => (
             <div key={label} className="rounded-xl p-3 text-center"
-              style={{ background: "rgba(255,255,255,0.04)" }}>
+              style={{ background: "rgba(0,0,0,0.03)" }}>
               <p className="text-xl font-black" style={{ color }}>{value}</p>
               <p className="text-[10px] text-slate-500">{label}</p>
             </div>
@@ -468,7 +468,7 @@ export default function TestsCatalogPage() {
       <div className="rounded-2xl p-4 flex items-start gap-3"
         style={{ background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)" }}>
         <AlertCircle size={16} className="text-purple-400 shrink-0 mt-0.5" />
-        <p className="text-xs text-slate-300 leading-6">
+        <p className="text-xs text-slate-600 leading-6">
           تست‌هایی که نیاز به روانشناس دارند پس از ارتباط با متخصص در بخش <strong className="text-purple-400">همکاران</strong> فعال می‌شوند.
         </p>
       </div>
@@ -479,9 +479,9 @@ export default function TestsCatalogPage() {
           <button key={id}
             onClick={() => setActiveCategory(id)}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeCategory === id ? "bg-orange-500 text-white" : "text-slate-400"
+              activeCategory === id ? "bg-orange-500 text-white" : "text-slate-500"
             }`}
-            style={activeCategory !== id ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" } : {}}>
+            style={activeCategory !== id ? { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(0,0,0,0.08)" } : {}}>
             {icon}{label}
           </button>
         ))}
@@ -505,14 +505,14 @@ export default function TestsCatalogPage() {
                 {/* اطلاعات */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                    <span className="font-black text-white text-sm">{test.name}</span>
+                    <span className="font-black text-slate-900 text-sm">{test.name}</span>
                     <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold"
                       style={{ background: "rgba(0,0,0,0.3)", color: test.color }}>
                       {test.construct}
                     </span>
                   </div>
                   <p className="text-xs font-bold mb-1" style={{ color: test.color }}>{test.fullName}</p>
-                  <p className="text-[11px] text-slate-400 leading-5 mb-2">{test.description}</p>
+                  <p className="text-[11px] text-slate-500 leading-5 mb-2">{test.description}</p>
                   <div className="flex items-center gap-3 text-[10px] text-slate-500">
                     <span className="flex items-center gap-1"><Clock size={10} />{test.duration}</span>
                     <span>{test.questions} سوال</span>
@@ -523,7 +523,7 @@ export default function TestsCatalogPage() {
                 <div className="shrink-0 mt-1">
                   {test.status === "available" ? (
                     <Link href={`/dashboard/tests/${test.id}`}>
-                      <button className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-black text-white transition-all"
+                      <button className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-black text-slate-900 transition-all"
                         style={{ background: "linear-gradient(135deg, #FF6B00, #FF9A3C)" }}>
                         شروع
                         <ChevronLeft size={12} />
@@ -554,8 +554,8 @@ export default function TestsCatalogPage() {
       {/* اطلاعیه پایین */}
       <div className="rounded-2xl p-5 text-center" style={CARD}>
         <Sparkles size={20} className="text-orange-400 mx-auto mb-2" />
-        <p className="text-sm font-bold text-white mb-1">نتایج شخصی‌سازی‌شده</p>
-        <p className="text-xs text-slate-400 leading-6">
+        <p className="text-sm font-bold text-slate-900 mb-1">نتایج شخصی‌سازی‌شده</p>
+        <p className="text-xs text-slate-500 leading-6">
           بر اساس نتایج تست‌ها، مقالات علمی و مشاوران متناسب با نیاز شما پیشنهاد داده می‌شود.
         </p>
       </div>

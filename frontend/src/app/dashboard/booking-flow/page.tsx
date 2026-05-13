@@ -35,8 +35,8 @@ export default function BookingFlowPage() {
       <div className="w-full max-w-lg">
         <div className="text-center mb-10">
           <div className="text-5xl mb-4">🧠</div>
-          <h1 className="text-3xl font-black text-white mb-3">مشاوره راوی</h1>
-          <p className="text-slate-400 text-sm leading-relaxed">
+          <h1 className="text-3xl font-black text-slate-900 mb-3">مشاوره راوی</h1>
+          <p className="text-slate-500 text-sm leading-relaxed">
             با چه نوع خدمتی می‌خواهید شروع کنید؟
           </p>
         </div>
@@ -45,12 +45,12 @@ export default function BookingFlowPage() {
           <button
             onClick={() => start("psychologist")}
             disabled={loading}
-            className="group p-6 rounded-2xl border border-white/10 hover:border-orange-500/50 transition-all text-right"
+            className="group p-6 rounded-2xl border border-slate-200 hover:border-orange-500/50 transition-all text-right"
             style={{ background: "linear-gradient(135deg,#1a2a4a,#0f1a2e)" }}
           >
             <div className="text-4xl mb-3">👨‍⚕️</div>
-            <div className="font-black text-white text-xl mb-2">روانشناس</div>
-            <div className="text-slate-400 text-xs leading-relaxed">
+            <div className="font-black text-slate-900 text-xl mb-2">روانشناس</div>
+            <div className="text-slate-500 text-xs leading-relaxed">
               مشاوره فردی با روانشناس متخصص بر اساس نیاز شما
             </div>
           </button>
@@ -58,12 +58,12 @@ export default function BookingFlowPage() {
           <button
             onClick={() => start("hamzist")}
             disabled={loading}
-            className="group p-6 rounded-2xl border border-white/10 hover:border-orange-500/50 transition-all text-right"
+            className="group p-6 rounded-2xl border border-slate-200 hover:border-orange-500/50 transition-all text-right"
             style={{ background: "linear-gradient(135deg,#1a2a4a,#0f1a2e)" }}
           >
             <div className="text-4xl mb-3">🤝</div>
-            <div className="font-black text-white text-xl mb-2">همزیست</div>
-            <div className="text-slate-400 text-xs leading-relaxed">
+            <div className="font-black text-slate-900 text-xl mb-2">همزیست</div>
+            <div className="text-slate-500 text-xs leading-relaxed">
               همراهی و پشتیبانی روزانه برای بهتر زیستن
             </div>
           </button>

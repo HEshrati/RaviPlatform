@@ -51,9 +51,9 @@ export default function DashboardBackground() {
   const lastCollisionRef = useRef<Set<string>>(new Set());
   const rafRef = useRef<number | null>(null);
 
-  // رنگ body رو در داشبورد سورمه‌ای می‌کنیم
+  // رنگ body رو در داشبورد سفید می‌کنیم
   useEffect(() => {
-    document.body.style.setProperty('background-color', '#0f172a', 'important');
+    document.body.style.setProperty('background-color', '#ffffff', 'important');
     return () => {
       document.body.style.removeProperty('background-color');
     };

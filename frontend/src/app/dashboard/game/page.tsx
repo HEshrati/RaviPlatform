@@ -11,7 +11,7 @@ export default function GamePage() {
           این بازی پس از شروع همنشینی شما فعال میشود. سوالاتی طراحی شده تا با همگروهیهای خود بیشتر آشنا شوید.
        </p>
        <div className="card-navy p-4 w-full max-w-xs opacity-50">
-          <p className="text-white text-sm">منتظر شروع رویداد باشید...</p>
+          <p className="text-slate-900 text-sm">منتظر شروع رویداد باشید...</p>
        </div>
     </div>
   );
