@@ -37,6 +37,7 @@ import { CrmModule } from './modules/crm/crm.module';
 import { MyTherapistModule } from './modules/my-therapist/my-therapist.module';
 import { AiGatewayModule } from './modules/ai-gateway/ai-gateway.module';
 import { BehaviorTrackingInterceptor } from './common/interceptors/behavior-tracking.interceptor';
+import { CollaborationModule } from './modules/collaboration/collaboration.module';
 
 @Module({
   imports: [
@@ -99,6 +100,8 @@ import { BehaviorTrackingInterceptor } from './common/interceptors/behavior-trac
     CrmModule,
     // ✅ My Therapist
     MyTherapistModule,
+    // ✅ Collaboration — استعلام کد نظام روانشناسی
+    CollaborationModule,
   ],
   providers: [
     // ✅ Interceptor سراسری — همه API callها را ثبت می‌کند

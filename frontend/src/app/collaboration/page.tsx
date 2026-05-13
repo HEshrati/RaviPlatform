@@ -73,17 +73,43 @@ const COLLAB_PLANS = [
 /* ── Psychologist Form ─────────────────────────────────────── */
 function PsychologistForm() {
   const [code, setCode] = useState("");
-  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [verified, setVerified] = useState<{
+    name: string;
+    field?: string;
+  } | null>(null);
   const [result, setResult] = useState<string | null>(null);
+
+  async function handleVerify() {
+    if (!code.trim()) return;
+    setVerifying(true);
+    setVerified(null);
+    setResult(null);
+    try {
+      const res = await fetch(
+        `${API}/api/collaboration/verify-nezam?code=${encodeURIComponent(code.trim())}`
+      );
+      const data = await res.json();
+      if (data.success && data.data) {
+        setVerified({ name: data.data.name, field: data.data.field });
+        setResult("verified");
+      } else {
+        setResult("not_found");
+      }
+    } catch {
+      setResult("error");
+    } finally {
+      setVerifying(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!code.trim()) return;
+    if (!verified) return;
     setSubmitting(true);
-    setResult(null);
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${API}/api/collaboration/psychologist`, {
@@ -94,9 +120,9 @@ function PsychologistForm() {
         },
         body: JSON.stringify({
           nezamCode: code,
-          fullName: name,
+          fullName: verified.name,
           phone,
-          specialty,
+          specialty: specialty || verified.field,
         }),
       });
       if (res.ok) setResult("success");
@@ -113,83 +139,124 @@ function PsychologistForm() {
       <div>
         <label className="text-white text-sm font-bold block mb-2">
           <Shield size={14} className="inline ml-1" />
-          کد نظام روانشناسی
+          شماره عضویت سازمان نظام روانشناسی
         </label>
-        <input
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="کد نظام را وارد کنید"
-          required
-          className="w-full rounded-xl p-3 text-sm text-white placeholder-slate-500 outline-none"
-          style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => {
+              setCode(e.target.value);
+              setVerified(null);
+              setResult(null);
+            }}
+            placeholder="شماره عضویت را وارد کنید"
+            required
+            className="flex-1 rounded-xl p-3 text-sm text-white placeholder-slate-500 outline-none"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
+          />
+          <button
+            type="button"
+            onClick={handleVerify}
+            disabled={verifying || !code.trim()}
+            className="px-4 rounded-xl font-bold text-white text-sm transition-all whitespace-nowrap"
+            style={{
+              background: verifying ? "#475569" : "#6366f1",
+              opacity: !code.trim() ? 0.5 : 1,
+            }}
+          >
+            {verifying ? "⏳ استعلام..." : "استعلام کد"}
+          </button>
+        </div>
+        <p className="text-xs text-slate-500 mt-1">
+          استعلام از سایت رسمی سازمان نظام روانشناسی و مشاوره (pcoiran.ir)
+        </p>
       </div>
-      <div>
-        <label className="text-white text-sm font-bold block mb-2">
-          نام و نام خانوادگی
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="نام کامل"
-          required
-          className="w-full rounded-xl p-3 text-sm text-white placeholder-slate-500 outline-none"
+
+      {result === "verified" && verified && (
+        <div
+          className="rounded-xl p-4 space-y-1"
           style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: "rgba(34,197,94,0.1)",
+            border: "1px solid rgba(34,197,94,0.3)",
           }}
-        />
-      </div>
-      <div>
-        <label className="text-white text-sm font-bold block mb-2">
-          شماره تماس
-        </label>
-        <input
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="09xxxxxxxxx"
-          required
-          className="w-full rounded-xl p-3 text-sm text-white placeholder-slate-500 outline-none"
+        >
+          <p className="text-green-400 text-sm font-bold flex items-center gap-1">
+            <Check size={16} /> کد نظام تایید شد
+          </p>
+          <p className="text-white text-sm">نام: {verified.name}</p>
+          {verified.field && (
+            <p className="text-slate-300 text-xs">تخصص: {verified.field}</p>
+          )}
+        </div>
+      )}
+
+      {result === "not_found" && (
+        <div
+          className="rounded-xl p-4"
           style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: "rgba(239,68,68,0.1)",
+            border: "1px solid rgba(239,68,68,0.3)",
           }}
-        />
-      </div>
-      <div>
-        <label className="text-white text-sm font-bold block mb-2">
-          تخصص
-        </label>
-        <input
-          type="text"
-          value={specialty}
-          onChange={(e) => setSpecialty(e.target.value)}
-          placeholder="مثال: روانشناسی بالینی"
-          className="w-full rounded-xl p-3 text-sm text-white placeholder-slate-500 outline-none"
-          style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-        />
-      </div>
-      <button
-        type="submit"
-        disabled={submitting}
-        className="w-full py-3 rounded-xl font-black text-white transition-all"
-        style={{ background: "#6366f1" }}
-      >
-        {submitting ? "در حال ارسال..." : "ثبت درخواست همکاری"}
-      </button>
+        >
+          <p className="text-red-400 text-sm">
+            شماره عضویت یافت نشد. لطفاً شماره معتبر وارد کنید.
+          </p>
+        </div>
+      )}
+
+      {verified && (
+        <>
+          <div>
+            <label className="text-white text-sm font-bold block mb-2">
+              شماره تماس
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="09xxxxxxxxx"
+              required
+              className="w-full rounded-xl p-3 text-sm text-white placeholder-slate-500 outline-none"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+            />
+          </div>
+          <div>
+            <label className="text-white text-sm font-bold block mb-2">
+              تخصص (اختیاری)
+            </label>
+            <input
+              type="text"
+              value={specialty}
+              onChange={(e) => setSpecialty(e.target.value)}
+              placeholder={verified.field || "مثال: روانشناسی بالینی"}
+              className="w-full rounded-xl p-3 text-sm text-white placeholder-slate-500 outline-none"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full py-3 rounded-xl font-black text-white transition-all"
+            style={{ background: "#6366f1" }}
+          >
+            {submitting ? "در حال ارسال..." : "ثبت درخواست همکاری"}
+          </button>
+        </>
+      )}
+
       {result === "success" && (
         <p className="text-green-400 text-sm text-center">
-          درخواست شما با موفقیت ثبت شد. پس از بررسی کد نظام، نتیجه اطلاع‌رسانی
-          می‌شود.
+          درخواست شما با موفقیت ثبت شد!
         </p>
       )}
       {result === "error" && (
