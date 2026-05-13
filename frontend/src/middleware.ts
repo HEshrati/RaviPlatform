@@ -9,7 +9,6 @@ const PROTECTED_PATHS = [
   "/notifications",
   "/invite-friends",
   "/support",
-  "/articles",
   "/courses",
   "/games",
   "/explore",
