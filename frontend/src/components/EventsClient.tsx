@@ -87,10 +87,16 @@ export default function EventsClient({ initialEvents, userName = "دوست را�
 
       <div className="max-w-6xl mx-auto px-4">
         <div className="mt-5 mb-6 relative rounded-3xl overflow-hidden p-6 lg:p-8"
-          style={{ background: "linear-gradient(135deg,#1B2A4A 0%,#0d1e35 60%,#1a1035 100%)" }}>
-          <div className="absolute top-0 right-0 w-56 h-56 rounded-full opacity-15"
-            style={{ background: "radial-gradient(circle,#FF6B00,transparent)", transform: "translate(30%,-30%)" }} />
+          style={{ background: "linear-gradient(135deg,#0f172a 0%,#1e293b 40%,#0f3460 80%,#FF6B00 150%)" }}>
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-20"
+            style={{ background: "radial-gradient(circle,#FF6B00,#FF9A3C,transparent)", transform: "translate(30%,-30%)", filter: "blur(20px)" }} />
+          <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full opacity-15"
+            style={{ background: "radial-gradient(circle,#6366f1,transparent)", transform: "translate(-20%,20%)", filter: "blur(16px)" }} />
           <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">✨</span>
+              <span className="text-orange-400 text-xs font-black tracking-wide">رویدادهای راوی</span>
+            </div>
             <h2 className="text-2xl lg:text-3xl font-black text-white leading-tight mb-2">
               سلام {userName}، چه نوع تجربه‌ای می‌خوای؟
             </h2>

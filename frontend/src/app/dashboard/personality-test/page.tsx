@@ -1,7 +1,7 @@
 "use client";
 
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { saveTestResult } from "@/lib/api";
 import { useApp } from "@/context/AppContext";
@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   Sparkles,
   X,
+  ChevronsDown,
+  Pause,
 } from "lucide-react";
 
 type Axis = "EI" | "SN" | "TF" | "JP" | "SOCIAL" | "PACE";
@@ -129,6 +131,40 @@ export default function PersonalityTest() {
   const [error, setError] = useState<string | null>(null);
   const [saveFailed, setSaveFailed] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [autoScroll, setAutoScroll] = useState(false);
+  const autoScrollRef = useRef(false);
+  const scrollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startAutoScroll = useCallback(() => {
+    setAutoScroll(true);
+    autoScrollRef.current = true;
+    scrollTimerRef.current = setInterval(() => {
+      if (!autoScrollRef.current) {
+        if (scrollTimerRef.current) clearInterval(scrollTimerRef.current);
+        return;
+      }
+      window.scrollBy({ top: 2, behavior: "auto" });
+      const atBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 10;
+      if (atBottom) {
+        autoScrollRef.current = false;
+        setAutoScroll(false);
+        if (scrollTimerRef.current) clearInterval(scrollTimerRef.current);
+      }
+    }, 30);
+  }, []);
+
+  const stopAutoScroll = useCallback(() => {
+    autoScrollRef.current = false;
+    setAutoScroll(false);
+    if (scrollTimerRef.current) {
+      clearInterval(scrollTimerRef.current);
+      scrollTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => { if (scrollTimerRef.current) clearInterval(scrollTimerRef.current); };
+  }, []);
 
   useEffect(() => {
     const localUser =
@@ -346,6 +382,19 @@ export default function PersonalityTest() {
         style={{ border: "1px solid rgba(0,0,0,0.06)" }}
       >
         <X size={18} className="text-slate-600" />
+      </button>
+
+      {/* دکمه اسکرول خودکار */}
+      <button
+        onClick={autoScroll ? stopAutoScroll : startAutoScroll}
+        aria-label={autoScroll ? "توقف اسکرول" : "اسکرول خودکار"}
+        className="fixed bottom-6 left-6 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl active:scale-95 transition-all"
+        style={{
+          background: autoScroll ? "#ef4444" : NAVY_BTN,
+          boxShadow: autoScroll ? "0 6px 20px rgba(239,68,68,0.35)" : NAVY_BTN_SHADOW,
+        }}
+      >
+        {autoScroll ? <Pause size={20} className="text-white" /> : <ChevronsDown size={20} className="text-white" />}
       </button>
 
       <div className="max-w-2xl w-full">

@@ -41,9 +41,9 @@ import {
 
 // ─── Style ──────────────────────────────────────────────────────────
 const CARD = {
-  background: "linear-gradient(145deg, #1B2A4A, #132038)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+  background: "linear-gradient(145deg, #1a1a2e, #16213e, #0f3460)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  boxShadow: "0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
 };
 
 interface TestResult {
@@ -267,10 +267,19 @@ export default function ProfilePage() {
       {/* ─── Hero Card ─── */}
       <div className="rounded-3xl p-6 relative overflow-hidden" style={CARD}>
         <div
-          className="absolute top-0 left-0 w-40 h-40 rounded-full opacity-15"
+          className="absolute top-0 left-0 w-48 h-48 rounded-full opacity-20"
           style={{
-            background: "radial-gradient(circle,#FF6B00,transparent)",
+            background: "radial-gradient(circle,#FF6B00,#FF9A3C,transparent)",
             transform: "translate(-30%,-30%)",
+            filter: "blur(20px)",
+          }}
+        />
+        <div
+          className="absolute bottom-0 right-0 w-32 h-32 rounded-full opacity-10"
+          style={{
+            background: "radial-gradient(circle,#6366f1,transparent)",
+            transform: "translate(20%,20%)",
+            filter: "blur(16px)",
           }}
         />
         <div className="relative z-10">

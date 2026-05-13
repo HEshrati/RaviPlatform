@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Footer from "@/components/landing/Footer";
 import FAQ from "@/components/landing/FAQ";
 import ArticlesPreviewSection from "@/components/ArticlesPreviewSection";
+import RaviRecommendations from "@/components/landing/RaviRecommendations";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import {
   Bell,
@@ -16,6 +17,7 @@ import {
   ArrowLeft,
   Sparkles,
   MessageCircle,
+  BookOpen,
 } from "lucide-react";
 
 /* ── پس‌زمینه متحرک ──────────────────────────────────────── */
@@ -286,10 +288,10 @@ function BottomNav() {
   const pathname = usePathname();
   const items = [
     { href: "/", label: "خانه", icon: Home },
+    { href: "/dashboard/tests", label: "کتابخانه", icon: BookOpen },
     { href: "/events", label: "تعاملات", icon: Calendar },
-    { href: "/messages", label: "پیوندها", icon: MessageCircle },
     { href: "/dashboard/explore", label: "کاوشگر", icon: Compass },
-    { href: "/dashboard", label: "پروفایل", icon: User },
+    { href: "/dashboard/profile", label: "پروفایل", icon: User },
   ];
 
   return (
@@ -425,6 +427,9 @@ export default function HomePage() {
           <section className="w-full mb-10">
             <ArticlesPreviewSection />
           </section>
+
+          {/* ─── پیشنهاد راوی به شما ─── */}
+          <RaviRecommendations />
 
           {/* ─── کشف خود ─── */}
           <section className="max-w-lg mx-auto md:max-w-none mb-10">

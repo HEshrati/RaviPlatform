@@ -9,13 +9,15 @@ import {
   LogOut,
   LayoutDashboard,
   Shield,
+  BookOpen,
+  Handshake,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { isAdminPhone } from "@/lib/api";
 
 const USER_NAV = [
   { name: "خانه", href: "/", icon: Home },
-  { name: "داشبورد", href: "/dashboard", icon: LayoutDashboard },
+  { name: "کتابخانه", href: "/dashboard/tests", icon: BookOpen },
   { name: "رزرو", href: "/events", icon: Calendar },
   { name: "بازی", href: "/dashboard/game", icon: Gamepad2 },
   { name: "پروفایل", href: "/dashboard/profile", icon: User },
@@ -25,6 +27,7 @@ const ADMIN_NAV = [
   { name: "خانه", href: "/", icon: Home },
   { name: "پنل ادمین", href: "/admin/dashboard", icon: Shield },
   { name: "رزروها", href: "/events", icon: Calendar },
+  { name: "همکاری", href: "/collaboration", icon: Handshake },
   { name: "پروفایل", href: "/dashboard/profile", icon: User },
 ];
 
@@ -51,7 +54,7 @@ export default function BottomNav() {
     );
   }
 
-  const isAdmin = isAdminPhone(state.user?.mobileNumber, state.user?.role);
+  const isAdmin = isAdminPhone(state.user?.mobileNumber);
   const nav = isAdmin ? ADMIN_NAV : USER_NAV;
 
   const handleLogout = () => {

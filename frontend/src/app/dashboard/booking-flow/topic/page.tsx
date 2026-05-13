@@ -4,12 +4,27 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
+const DEFAULT_TOPICS = [
+  { slug: "depression", name: "افسردگی", icon: "😔", description: "احساس غم، بی‌انگیزگی و ناامیدی" },
+  { slug: "anxiety", name: "اضطراب", icon: "😰", description: "نگرانی مداوم، استرس و تنش" },
+  { slug: "relationship", name: "مشکلات رابطه", icon: "💔", description: "چالش‌های عاطفی و ارتباطی" },
+  { slug: "self-esteem", name: "عزت نفس", icon: "🪞", description: "احساس بی‌ارزشی و عدم اعتماد به نفس" },
+  { slug: "anger", name: "مدیریت خشم", icon: "😤", description: "کنترل خشم و عصبانیت" },
+  { slug: "grief", name: "سوگ و فقدان", icon: "🕊️", description: "از دست دادن عزیزان یا تجربه‌های مهم" },
+  { slug: "stress", name: "استرس شغلی", icon: "💼", description: "فشار کاری و فرسودگی شغلی" },
+  { slug: "sleep", name: "اختلال خواب", icon: "🌙", description: "بی‌خوابی یا مشکلات مرتبط با خواب" },
+  { slug: "family", name: "مسائل خانوادگی", icon: "👨‍👩‍👧", description: "تعارضات و چالش‌های خانوادگی" },
+  { slug: "addiction", name: "وابستگی", icon: "⛓️", description: "وابستگی‌های رفتاری یا مادی" },
+  { slug: "identity", name: "بحران هویت", icon: "🧩", description: "سردرگمی درباره خود و مسیر زندگی" },
+  { slug: "other", name: "سایر موضوعات", icon: "💬", description: "هر موضوع دیگری که ذهنتان را درگیر کرده" },
+];
+
 export default function TopicPage() {
   const router = useRouter();
   const params = useSearchParams();
   const sid = params?.get("sid") || "";
   const type = params?.get("type") || "psychologist";
-  const [topics, setTopics] = useState<any[]>([]);
+  const [topics, setTopics] = useState<any[]>(DEFAULT_TOPICS);
   const [selected, setSelected] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -18,7 +33,13 @@ export default function TopicPage() {
     const token = localStorage.getItem("token");
     fetch(`${API}/api/consultation-flow/topics?serviceType=${type}`, {
       headers: { Authorization: `Bearer ${token}` },
-    }).then(r => r.json()).then(d => { setTopics(Array.isArray(d) ? d : []); setLoading(false); });
+    })
+      .then(r => r.json())
+      .then(d => {
+        if (Array.isArray(d) && d.length > 0) setTopics(d);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [type]);
 
   async function next() {
