@@ -1,0 +1,336 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useApp } from "@/context/AppContext";
+import {
+  fetchUserProfile,
+  updateUserProfile,
+  fetchUserStats,
+  UserProfile,
+  UserStats,
+} from "@/lib/api";
+import { User, Star, Calendar, Edit3, Save, X, Camera, CheckCircle } from "lucide-react";
+
+const INITIAL_PROFILE: UserProfile = {
+  avatarUrl: "",
+  bio: "",
+  interests: [],
+  city: "",
+  age: null,
+  gender: "",
+  education: "",
+};
+
+const INITIAL_STATS: UserStats = {
+  successfulMatches: 0,
+  completedEvents: 0,
+  upcomingEvents: 0,
+  totalBookings: 0,
+};
+
+export default function ProfilePage() {
+  const { state } = useApp();
+  const [profile, setProfile] = useState<UserProfile>(INITIAL_PROFILE);
+  const [stats, setStats] = useState<UserStats>(INITIAL_STATS);
+  const [interestsInput, setInterestsInput] = useState("");
+  const [status, setStatus] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const [profileData, statsData] = await Promise.all([
+          fetchUserProfile().catch(() => INITIAL_PROFILE),
+          fetchUserStats().catch(() => INITIAL_STATS),
+        ]);
+        setProfile(profileData);
+        setInterestsInput(profileData.interests.join("، "));
+        setStats(statsData);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  function updateField<K extends keyof UserProfile>(key: K, value: UserProfile[K]) {
+    setProfile((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function onSave(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("");
+    setIsSaving(true);
+    try {
+      const payload = {
+        ...profile,
+        interests: interestsInput
+          .split(/[,،]/)
+          .map((i) => i.trim())
+          .filter(Boolean),
+      };
+      const updated = await updateUserProfile(payload);
+      setProfile(updated);
+      setInterestsInput(updated.interests.join("، "));
+      setStatus("پروفایل با موفقیت ذخیره شد.");
+      setIsEditing(false);
+    } catch {
+      setStatus("ذخیره‌سازی انجام نشد. لطفاً دوباره تلاش کنید.");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  const userName = state.user?.name || "کاربر راوی";
+  const userPhone = state.user?.mobileNumber || "";
+  const avatarUrl = profile.avatarUrl || state.user?.avatar || "";
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto pb-24 space-y-5">
+      {/* ── کارت پروفایل اصلی ── */}
+      <div className="app-card rounded-3xl overflow-hidden">
+        {/* هدر نارنجی */}
+        <div className="h-28 bg-gradient-to-br from-orange-500 to-orange-600 relative">
+          <div className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: "radial-gradient(circle at 30% 50%, white 0%, transparent 60%)",
+            }}
+          />
+        </div>
+
+        {/* اطلاعات کاربر */}
+        <div className="px-6 pb-6 -mt-14">
+          {/* آواتار */}
+          <div className="relative w-24 h-24 mb-4">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={userName}
+                className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                }}
+              />
+            ) : null}
+            <div
+              className={`w-24 h-24 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 border-4 border-white shadow-xl flex items-center justify-center ${avatarUrl ? "hidden" : ""}`}
+            >
+              <span className="text-3xl font-black text-white">
+                {userName.charAt(0)}
+              </span>
+            </div>
+            {isEditing && (
+              <button className="absolute bottom-0 right-0 w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                <Camera size={13} className="text-white" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-black text-white">{userName}</h1>
+              {userPhone && (
+                <p className="text-sm text-slate-400 mt-0.5">{userPhone}</p>
+              )}
+              {profile.city && (
+                <p className="text-xs text-slate-500 mt-1">📍 {profile.city}</p>
+              )}
+            </div>
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-2xl font-bold text-sm transition-all ${
+                isEditing
+                  ? "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                  : "bg-orange-500 text-white hover:bg-orange-400 shadow-lg shadow-orange-500/30"
+              }`}
+            >
+              {isEditing ? (
+                <><X size={16} />انصراف</>
+              ) : (
+                <><Edit3 size={16} />ویرایش پروفایل</>
+              )}
+            </button>
+          </div>
+
+          {profile.bio && !isEditing && (
+            <p className="mt-3 text-sm text-slate-300 leading-relaxed">{profile.bio}</p>
+          )}
+
+          {profile.interests.length > 0 && !isEditing && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {profile.interests.map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-orange-500/20 text-orange-400 text-xs font-bold px-3 py-1 rounded-full border border-orange-500/30"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── آمار ── */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="app-card rounded-3xl p-5 flex flex-col items-center gap-2">
+          <div className="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center">
+            <CheckCircle size={24} className="text-green-400" />
+          </div>
+          <span className="text-3xl font-black text-white">{stats.successfulMatches}</span>
+          <span className="text-xs text-slate-400 text-center">تطابق موفق</span>
+        </div>
+
+        <div className="app-card rounded-3xl p-5 flex flex-col items-center gap-2">
+          <div className="w-12 h-12 rounded-2xl bg-orange-500/20 flex items-center justify-center">
+            <Calendar size={24} className="text-orange-400" />
+          </div>
+          <span className="text-3xl font-black text-white">{stats.completedEvents}</span>
+          <span className="text-xs text-slate-400 text-center">رویداد تمام‌شده</span>
+        </div>
+
+        <div className="app-card rounded-3xl p-5 flex flex-col items-center gap-2">
+          <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center">
+            <Star size={24} className="text-blue-400" />
+          </div>
+          <span className="text-3xl font-black text-white">{stats.upcomingEvents}</span>
+          <span className="text-xs text-slate-400 text-center">رویداد پیش‌رو</span>
+        </div>
+
+        <div className="app-card rounded-3xl p-5 flex flex-col items-center gap-2">
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center">
+            <User size={24} className="text-purple-400" />
+          </div>
+          <span className="text-3xl font-black text-white">{stats.totalBookings}</span>
+          <span className="text-xs text-slate-400 text-center">کل رزروها</span>
+        </div>
+      </div>
+
+      {/* ── فرم ویرایش ── */}
+      {isEditing && (
+        <form onSubmit={onSave} className="app-card rounded-3xl p-6 space-y-4">
+          <h2 className="text-lg font-black text-white mb-2">ویرایش اطلاعات</h2>
+
+          <label className="block space-y-1.5">
+            <span className="text-sm text-slate-300">آدرس آواتار</span>
+            <input
+              value={profile.avatarUrl ?? ""}
+              onChange={(e) => updateField("avatarUrl", e.target.value)}
+              className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500"
+              placeholder="https://example.com/avatar.jpg"
+            />
+          </label>
+
+          <label className="block space-y-1.5">
+            <span className="text-sm text-slate-300">درباره من</span>
+            <textarea
+              value={profile.bio ?? ""}
+              onChange={(e) => updateField("bio", e.target.value)}
+              className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2.5 text-white text-sm min-h-20 resize-none focus:outline-none focus:border-orange-500"
+              maxLength={300}
+              placeholder="خودت را معرفی کن..."
+            />
+          </label>
+
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block space-y-1.5">
+              <span className="text-sm text-slate-300">شهر</span>
+              <input
+                value={profile.city ?? ""}
+                onChange={(e) => updateField("city", e.target.value)}
+                className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500"
+                placeholder="تهران"
+              />
+            </label>
+
+            <label className="block space-y-1.5">
+              <span className="text-sm text-slate-300">سن</span>
+              <input
+                type="number"
+                min={18}
+                max={99}
+                value={profile.age ?? ""}
+                onChange={(e) =>
+                  updateField("age", e.target.value ? Number(e.target.value) : null)
+                }
+                className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500"
+              />
+            </label>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block space-y-1.5">
+              <span className="text-sm text-slate-300">جنسیت</span>
+              <select
+                value={profile.gender ?? ""}
+                onChange={(e) => updateField("gender", e.target.value)}
+                className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500"
+              >
+                <option value="">انتخاب کنید</option>
+                <option value="male">مرد</option>
+                <option value="female">زن</option>
+                <option value="non-binary">غیر باینری</option>
+                <option value="prefer-not-to-say">ترجیح می‌دهم نگویم</option>
+              </select>
+            </label>
+
+            <label className="block space-y-1.5">
+              <span className="text-sm text-slate-300">تحصیلات</span>
+              <input
+                value={profile.education ?? ""}
+                onChange={(e) => updateField("education", e.target.value)}
+                className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500"
+                placeholder="کارشناسی"
+              />
+            </label>
+          </div>
+
+          <label className="block space-y-1.5">
+            <span className="text-sm text-slate-300">علایق (با کاما یا ویرگول جدا کنید)</span>
+            <input
+              value={interestsInput}
+              onChange={(e) => setInterestsInput(e.target.value)}
+              className="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500"
+              placeholder="کتاب، موسیقی، کوهنوردی"
+            />
+          </label>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-orange-500 hover:bg-orange-400 disabled:opacity-50 text-white px-5 py-3 font-bold transition-all"
+            >
+              <Save size={18} />
+              {isSaving ? "در حال ذخیره..." : "ذخیره تغییرات"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsEditing(false)}
+              className="rounded-xl bg-slate-700 hover:bg-slate-600 text-white px-5 py-3 font-bold transition-all"
+            >
+              انصراف
+            </button>
+          </div>
+
+          {status && (
+            <p className={`text-sm font-medium ${status.includes("موفق") ? "text-green-400" : "text-red-400"}`}>
+              {status}
+            </p>
+          )}
+        </form>
+      )}
+    </div>
+  );
+}

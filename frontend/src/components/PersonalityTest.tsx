@@ -1,0 +1,669 @@
+"use client";
+
+import React, { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { saveTestResult } from "@/lib/api";
+import { useApp } from "@/context/AppContext";
+import {
+  ChevronRight,
+  ChevronLeft,
+  AlertCircle,
+  Loader2,
+  CheckCircle2,
+  Sparkles,
+  X,
+} from "lucide-react";
+
+type Axis = "EI" | "SN" | "TF" | "JP" | "SOCIAL" | "PACE";
+type Scores = Record<Axis, number>;
+
+interface Option {
+  id: string;
+  text: string;
+  icon: string;
+  scores: Partial<Scores>;
+}
+interface Question {
+  id: number;
+  text: string;
+  basis: string;
+  options: Option[];
+}
+
+const questions: Question[] = [
+  {
+    id: 1,
+    text: "بعد از یک هفته شلوغ، کدام برنامه بیشتر شارژت می‌کند؟",
+    basis: "انرژی اجتماعی: درون‌گرایی / برون‌گرایی",
+    options: [
+      {
+        id: "q1_i",
+        text: "جمع کوچک و عمیق با چند نفر قابل اعتماد",
+        icon: "☕",
+        scores: { EI: -2, SOCIAL: -1 },
+      },
+      {
+        id: "q1_e",
+        text: "جمع پرانرژی با آدم‌های تازه",
+        icon: "🎉",
+        scores: { EI: 2, SOCIAL: 2 },
+      },
+    ],
+  },
+  {
+    id: 2,
+    text: "در رویداد جدید دنبال چه تجربه‌ای هستی؟",
+    basis: "سبک تجربه: جزئیات آشنا / کشف و تنوع",
+    options: [
+      {
+        id: "q2_s",
+        text: "برنامه روشن، مکان مشخص و فعالیت قابل پیش‌بینی",
+        icon: "🧭",
+        scores: { SN: -2, JP: 1 },
+      },
+      {
+        id: "q2_n",
+        text: "غافلگیری، ایده تازه و گفت‌وگوی غیرمنتظره",
+        icon: "✨",
+        scores: { SN: 2, PACE: 1 },
+      },
+    ],
+  },
+  {
+    id: 3,
+    text: "وقتی اختلاف سلیقه پیش می‌آید، اولویت تو چیست؟",
+    basis: "تصمیم‌گیری: منطق / همدلی",
+    options: [
+      {
+        id: "q3_t",
+        text: "اول مسئله را دقیق و منصفانه تحلیل می‌کنم",
+        icon: "🧠",
+        scores: { TF: -2 },
+      },
+      {
+        id: "q3_f",
+        text: "اول حال آدم‌ها و حفظ رابطه برایم مهم است",
+        icon: "💛",
+        scores: { TF: 2, SOCIAL: 1 },
+      },
+    ],
+  },
+  {
+    id: 4,
+    text: "برای یک قرار گروهی کدام حالت را ترجیح می‌دهی؟",
+    basis: "ساختار رفتاری: برنامه‌مند / منعطف",
+    options: [
+      {
+        id: "q4_j",
+        text: "از قبل بدانم چه زمانی، کجا و با چه برنامه‌ای",
+        icon: "📋",
+        scores: { JP: 2, PACE: -1 },
+      },
+      {
+        id: "q4_p",
+        text: "فضا باز باشد و همان لحظه تصمیم بگیریم",
+        icon: "🌊",
+        scores: { JP: -2, PACE: 1 },
+      },
+    ],
+  },
+  {
+    id: 5,
+    text: "در گروه‌ها معمولاً چه نقشی می‌گیری؟",
+    basis: "نقش اجتماعی اولیه",
+    options: [
+      {
+        id: "q5_c",
+        text: "هماهنگ‌کننده؛ کمک می‌کنم گفتگو جلو برود",
+        icon: "🤝",
+        scores: { EI: 1, SOCIAL: 2, JP: 1 },
+      },
+      {
+        id: "q5_o",
+        text: "مشاهده‌گر فعال؛ کم‌حرف‌ترم اما عمیق وصل می‌شوم",
+        icon: "👀",
+        scores: { EI: -1, SOCIAL: -1, TF: 1 },
+      },
+    ],
+  },
+  {
+    id: 6,
+    text: "ریتم ایده‌آل تو برای آشنایی چیست؟",
+    basis: "ریتم اعتمادسازی و مچینگ",
+    options: [
+      {
+        id: "q6_slow",
+        text: "آرام، مرحله‌ای و با زمان کافی",
+        icon: "🌱",
+        scores: { PACE: -2, JP: 1 },
+      },
+      {
+        id: "q6_fast",
+        text: "سریع، پویا و بدون تعارف زیاد",
+        icon: "⚡",
+        scores: { PACE: 2, EI: 1 },
+      },
+    ],
+  },
+];
+
+const emptyScores: Scores = { EI: 0, SN: 0, TF: 0, JP: 0, SOCIAL: 0, PACE: 0 };
+
+function buildResult(scores: Scores) {
+  const code = `${scores.EI >= 0 ? "E" : "I"}${scores.SN >= 0 ? "N" : "S"}${scores.TF >= 0 ? "F" : "T"}${scores.JP >= 0 ? "J" : "P"}`;
+  const social =
+    scores.SOCIAL >= 2
+      ? "جمع‌ساز"
+      : scores.SOCIAL <= -2
+        ? "ارتباط عمیق دونفره"
+        : "متعادل اجتماعی";
+  const pace =
+    scores.PACE >= 2
+      ? "ریتم سریع"
+      : scores.PACE <= -2
+        ? "ریتم آرام"
+        : "ریتم منعطف";
+  const descriptions: Record<string, string> = {
+    ENFJ: "گرم، جمع‌ساز و هدفمند؛ برای رویدادهای گفتگو محور و تیمی عالی هستی.",
+    ENFP: "کنجکاو، پرانرژی و ایده‌پرداز؛ با تجربه‌های تازه و جمع‌های متنوع مچ می‌شوی.",
+    INFJ: "عمیق، معناگرا و همدل؛ جمع‌های کوچک و گفت‌وگوهای باکیفیت برایت مناسب‌تر است.",
+    INFP: "اصیل، احساسی و خلاق؛ با آدم‌های امن و فضاهای آرام بهتر وصل می‌شوی.",
+    ENTJ: "تصمیم‌ساز و ساختارمند؛ در رویدادهای هدفمند یا حرفه‌ای خوب می‌درخشی.",
+    ENTP: "چالش‌دوست و گفتگو محور؛ بازی، مناظره و تجربه‌های غیرکلیشه‌ای مناسب توست.",
+    INTJ: "تحلیلی و مستقل؛ برنامه‌های کم‌حاشیه، دقیق و فکری برایت بهتر است.",
+    INTP: "کاوشگر و منطقی؛ جمع‌های فکری و بازی‌های استراتژیک مچ خوبی هستند.",
+    ESFJ: "حمایت‌گر و اجتماعی؛ با دورهمی‌های گرم و آشنا سریع ارتباط می‌گیری.",
+    ESFP: "تجربه‌گرا و پرشور؛ برنامه‌های سرگرم‌کننده و پرانرژی مناسب توست.",
+    ISFJ: "وفادار و مراقب؛ جمع‌های امن، قابل پیش‌بینی و صمیمی برایت بهترند.",
+    ISFP: "آرام، هنری و تجربه‌محور؛ فضاهای لطیف، کافه‌ای و کم‌فشار مناسب توست.",
+    ESTJ: "اجرایی و منظم؛ رویدادهای برنامه‌دار و نتیجه‌محور برایت جذاب‌تر است.",
+    ESTP: "عمل‌گرا و هیجان‌دوست؛ فعالیت، بازی و چالش زنده مناسب توست.",
+    ISTJ: "دقیق و قابل اعتماد؛ برنامه‌های منظم، کوچک و با قوانین روشن برایت بهتر است.",
+    ISTP: "مستقل و تجربه‌گر؛ فعالیت‌های عملی و کم‌حرفی اضافی برایت جذاب است.",
+  };
+  return {
+    code,
+    type: `${code} · ${social} · ${pace}`,
+    description:
+      descriptions[code] ||
+      "پروفایل تو ترکیبی است و برای مچینگ نیاز به چند تعامل واقعی دیگر داریم.",
+    matchingBasis: {
+      mbtiLikeCode: code,
+      socialEnergy: scores.EI,
+      noveltyPreference: scores.SN,
+      empathyLogic: scores.TF,
+      structureNeed: scores.JP,
+      groupAffinity: scores.SOCIAL,
+      trustPace: scores.PACE,
+    },
+  };
+}
+
+function safeUpdateContext(app: any, partial: Record<string, any>) {
+  try {
+    if (!app?.state?.user) return;
+    const newUser = { ...app.state.user, ...partial };
+    if (typeof app.setUser === "function") app.setUser(newUser);
+    else if (typeof app.dispatch === "function")
+      app.dispatch({ type: "SET_USER", payload: newUser });
+  } catch {}
+}
+
+function updateLocalUser(partial: Record<string, any>) {
+  try {
+    if (typeof window === "undefined") return;
+    const raw = localStorage.getItem("user");
+    if (!raw) return;
+    const u = JSON.parse(raw);
+    Object.assign(u, partial);
+    localStorage.setItem("user", JSON.stringify(u));
+  } catch {}
+}
+
+function withTimeout<T>(promise: Promise<T>, ms = 8000): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), ms),
+    ),
+  ]);
+}
+
+// ─── Theme constants ──────────────────────────────────────────────
+// رنگ اصلی دکمه‌ها: سورمه‌ای. نارنجی فقط برای درصدها و focus.
+const NAVY_BTN = "linear-gradient(135deg,#1B2A4A 0%,#2d4263 100%)";
+const NAVY_BTN_SHADOW = "0 6px 20px rgba(27,42,76,0.35)";
+const ORANGE = "#FF6B00";
+
+export default function PersonalityTest() {
+  const router = useRouter();
+  const app = useApp() as any;
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, Option>>({});
+  const [showResult, setShowResult] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saveFailed, setSaveFailed] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+  const scores = useMemo(
+    () =>
+      Object.values(answers).reduce(
+        (acc, option) => {
+          Object.entries(option.scores).forEach(([axis, value]) => {
+            acc[axis as Axis] += value || 0;
+          });
+          return acc;
+        },
+        { ...emptyScores },
+      ),
+    [answers],
+  );
+  const result = buildResult(scores);
+
+  const totalQuestions = questions.length;
+  const isLastQuestion = currentQuestion === totalQuestions - 1;
+  const allAnswered = Object.keys(answers).length === totalQuestions;
+  const currentAnswered = !!answers[questions[currentQuestion]?.id];
+
+  const handleSelectOption = (questionId: number, option: Option) => {
+    setError(null);
+    const next = { ...answers, [questionId]: option };
+    setAnswers(next);
+    if (!isLastQuestion) {
+      setTimeout(
+        () => setCurrentQuestion((q) => Math.min(q + 1, totalQuestions - 1)),
+        250,
+      );
+    }
+  };
+
+  const goBack = () => {
+    setError(null);
+    setCurrentQuestion((q) => Math.max(0, q - 1));
+  };
+
+  const handleExit = () => {
+    setShowExitConfirm(true);
+  };
+
+  const confirmExit = () => {
+    setShowExitConfirm(false);
+    // پاک کردن state در حال انجام تست (اختیاری)
+    setAnswers({});
+    setCurrentQuestion(0);
+    router.push("/dashboard");
+  };
+
+  const finishTest = async () => {
+    if (saving) return;
+    if (!allAnswered) {
+      setError("لطفاً به همه سوالات پاسخ بده.");
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+    setSaveFailed(false);
+
+    const finalScores = Object.values(answers).reduce(
+      (acc, item) => {
+        Object.entries(item.scores).forEach(([axis, value]) => {
+          acc[axis as Axis] += value || 0;
+        });
+        return acc;
+      },
+      { ...emptyScores },
+    );
+    const finalResult = buildResult(finalScores);
+    const answersMap = Object.fromEntries(
+      Object.entries(answers).map(([k, v]) => [k, v.id]),
+    );
+
+    // ✅ ابتدا isTestTaken رو client-side ست کن تا TestGate ریدایرکت نکنه
+    updateLocalUser({ isTestTaken: true });
+    safeUpdateContext(app, { isTestTaken: true });
+
+    try {
+      await withTimeout(
+        saveTestResult({
+          test_name: "raavi_matching_basis_v1",
+          main_result: finalResult.code,
+          scores: {
+            ...finalScores,
+            fullType: finalResult.type,
+            matchingBasis: finalResult.matchingBasis,
+            answers: answersMap,
+          },
+        }),
+        8000,
+      );
+    } catch (e: any) {
+      setSaveFailed(true);
+    }
+
+    // ✅ backend رو هم آپدیت کن تا re-fetch بعدی isTestTaken رو overwrite نکنه
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (token) {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL || ""}/api/auth/mark-test-taken`,
+          { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+        );
+      }
+    } catch {}
+
+    setSaving(false);
+
+    await fetch("/api/auth/refresh", {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => {});
+
+    router.replace("/dashboard");
+  };
+
+  // ──────────────────────────────────────────────────────
+  //   Exit Confirmation Modal
+  // ──────────────────────────────────────────────────────
+  if (showExitConfirm) {
+    return (
+      <div
+        className="fixed inset-0 z-[400] flex items-center justify-center p-4"
+        style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+        dir="rtl"
+      >
+        <div className="w-full max-w-sm rounded-3xl p-6 shadow-2xl bg-white">
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+              style={{
+                background: "rgba(255,107,0,0.12)",
+                border: "1px solid rgba(255,107,0,0.25)",
+              }}
+            >
+              <AlertCircle size={22} className="text-orange-500" />
+            </div>
+            <div>
+              <h3 className="font-black text-slate-900 text-base">
+                خروج از تست
+              </h3>
+              <p className="text-slate-500 text-xs mt-0.5">
+                پاسخ‌های فعلی ذخیره نمی‌شن
+              </p>
+            </div>
+          </div>
+          <p className="text-slate-600 text-sm leading-relaxed mb-5">
+            مطمئنی می‌خوای از تست خارج بشی؟ برای مچینگ بهتر، بهتره تست رو کامل
+            کنی.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={confirmExit}
+              className="flex-1 py-3 rounded-2xl font-black text-white text-sm transition-all"
+              style={{ background: NAVY_BTN, boxShadow: NAVY_BTN_SHADOW }}
+            >
+              بله، خروج
+            </button>
+            <button
+              onClick={() => setShowExitConfirm(false)}
+              className="flex-1 py-3 rounded-2xl font-black text-slate-700 text-sm transition-all"
+              style={{ background: "#f3f4f6", border: "1px solid #e2e8f0" }}
+            >
+              ادامه تست
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ──────────────────────────────────────────────────────
+  //   Result Page
+  // ──────────────────────────────────────────────────────
+  if (showResult) {
+    return (
+      <div
+        className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-slate-100 flex items-center justify-center p-4"
+        dir="rtl"
+      >
+        <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 text-center border border-slate-200">
+          <div className="text-5xl mb-4">🧬</div>
+          <p className="text-orange-500 text-xs font-black mb-2">
+            مبنای اولیه مچینگ تو
+          </p>
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-1">
+            {result.code}
+          </h2>
+          <p className="text-sm text-slate-600 font-bold mb-3">{result.type}</p>
+          <p className="text-base text-slate-600 leading-8 mb-6">
+            {result.description}
+          </p>
+
+          {saveFailed && (
+            <div className="rounded-2xl p-3 mb-5 flex items-start gap-2 text-right border bg-yellow-50 border-yellow-200">
+              <AlertCircle
+                size={16}
+                className="text-yellow-600 flex-shrink-0 mt-0.5"
+              />
+              <p className="text-xs text-yellow-800">
+                نتیجه روی این دستگاه ذخیره شد، اما به سرور نرسید. ممکنه به‌خاطر
+                اتصال اینترنت باشه.
+              </p>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-7 text-right">
+            {[
+              ["انرژی اجتماعی", scores.EI],
+              ["تنوع‌خواهی", scores.SN],
+              ["همدلی/منطق", scores.TF],
+              ["نیاز به ساختار", scores.JP],
+              ["گروه‌پذیری", scores.SOCIAL],
+              ["ریتم اعتماد", scores.PACE],
+            ].map(([label, value]) => (
+              <div
+                key={label as string}
+                className="rounded-2xl bg-slate-50 border border-slate-100 p-3"
+              >
+                <p className="text-xs text-slate-500">{label}</p>
+                {/* درصد/امتیاز با رنگ نارنجی */}
+                <p className="text-lg font-black" style={{ color: ORANGE }}>
+                  {Number(value) > 0 ? "+" : ""}
+                  {String(value)}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* دکمه اصلی - سورمه‌ای */}
+          <button
+            onClick={() => router.push("/dashboard/profile")}
+            className="w-full px-8 py-3 rounded-2xl font-black text-white transition-all flex items-center justify-center gap-2 hover:opacity-95"
+            style={{ background: NAVY_BTN, boxShadow: NAVY_BTN_SHADOW }}
+          >
+            <Sparkles size={18} />
+            مشاهده پروفایل کامل من
+          </button>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="mt-2 w-full text-slate-500 px-8 py-2 rounded-2xl font-bold hover:text-slate-700 transition-colors text-sm"
+          >
+            رفتن به داشبورد
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ──────────────────────────────────────────────────────
+  //   Question Page
+  // ──────────────────────────────────────────────────────
+  const question = questions[currentQuestion];
+  const selectedOptionId = answers[question.id]?.id;
+  const progressPercent = Math.round(
+    ((currentQuestion + 1) / totalQuestions) * 100,
+  );
+
+  return (
+    <div
+      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-slate-100 flex items-center justify-center p-4 relative"
+      dir="rtl"
+    >
+      {/* دکمه خروج (× در گوشه بالا چپ) */}
+      <button
+        onClick={handleExit}
+        disabled={saving}
+        aria-label="خروج از تست"
+        className="absolute top-4 left-4 z-10 w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-md hover:shadow-lg active:scale-95 transition-all disabled:opacity-50"
+        style={{ border: "1px solid rgba(0,0,0,0.06)" }}
+      >
+        <X size={18} className="text-slate-600" />
+      </button>
+
+      <div className="max-w-2xl w-full">
+        {/* پیشرفت */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2 text-sm">
+            <span className="text-slate-600">
+              سوال {currentQuestion + 1} از {totalQuestions}
+            </span>
+            {/* درصد - نارنجی */}
+            <span className="font-black" style={{ color: ORANGE }}>
+              {progressPercent}٪
+            </span>
+          </div>
+          <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+            <div
+              className="h-2 rounded-full transition-all duration-500"
+              style={{
+                width: `${progressPercent}%`,
+                background: `linear-gradient(90deg, ${ORANGE}, #FF9A3C)`,
+              }}
+            />
+          </div>
+        </div>
+
+        {/* کارت سوال */}
+        <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 border border-slate-200">
+          <p className="text-orange-500 text-xs font-black mb-3">
+            {question.basis}
+          </p>
+          <h2 className="text-xl md:text-2xl font-black text-slate-900 leading-9">
+            {question.text}
+          </h2>
+
+          <div className="space-y-4 mt-8">
+            {question.options.map((option) => {
+              const isSelected = selectedOptionId === option.id;
+              return (
+                <button
+                  key={option.id}
+                  onClick={() => handleSelectOption(question.id, option)}
+                  disabled={saving}
+                  className="w-full p-5 rounded-2xl border-2 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-lg disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  style={
+                    isSelected
+                      ? {
+                          // انتخاب: سورمه‌ای
+                          background: NAVY_BTN,
+                          borderColor: "#1B2A4A",
+                          boxShadow: NAVY_BTN_SHADOW,
+                        }
+                      : {
+                          background: "white",
+                          borderColor: "#e2e8f0",
+                        }
+                  }
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl">{option.icon}</span>
+                    <span
+                      className="text-base font-bold flex-1"
+                      style={{ color: isSelected ? "white" : "#1f2937" }}
+                    >
+                      {option.text}
+                    </span>
+                    {isSelected && (
+                      <CheckCircle2
+                        size={20}
+                        className="text-white flex-shrink-0"
+                      />
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {error && (
+            <div className="mt-5 rounded-2xl p-3 flex items-start gap-2 bg-red-50 border border-red-200">
+              <AlertCircle
+                size={16}
+                className="text-red-600 flex-shrink-0 mt-0.5"
+              />
+              <p className="text-sm text-red-700 font-bold">{error}</p>
+            </div>
+          )}
+
+          {/* دکمه‌های ناوبری */}
+          <div className="flex items-center gap-3 mt-6">
+            {currentQuestion > 0 && (
+              <button
+                onClick={goBack}
+                disabled={saving}
+                className="flex items-center gap-1 px-4 py-2.5 rounded-2xl text-sm font-bold text-slate-600 transition-all hover:bg-slate-100 disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <ChevronRight size={16} />
+                قبلی
+              </button>
+            )}
+
+            {/* دکمه «پایان تست» — سوال آخر، رنگ سورمه‌ای */}
+            {isLastQuestion && (
+              <button
+                onClick={finishTest}
+                disabled={saving || !currentAnswered}
+                className="flex-1 py-3 rounded-2xl text-base font-black text-white transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-orange-500"
+                style={{
+                  background: saving || !currentAnswered ? "#cbd5e1" : NAVY_BTN,
+                  boxShadow:
+                    saving || !currentAnswered ? "none" : NAVY_BTN_SHADOW,
+                }}
+              >
+                {saving ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    در حال ذخیره نتیجه...
+                  </>
+                ) : (
+                  <>
+                    🎉 پایان تست و نمایش نتیجه
+                    <ChevronLeft size={18} />
+                  </>
+                )}
+              </button>
+            )}
+
+            {!isLastQuestion && currentAnswered && (
+              <p className="flex-1 text-center text-xs text-slate-400 font-bold">
+                در حال انتقال به سوال بعد...
+              </p>
+            )}
+          </div>
+
+          {!currentAnswered && !isLastQuestion && (
+            <p className="text-center text-xs text-slate-400 mt-4">
+              یکی از گزینه‌ها رو انتخاب کن تا به سوال بعد بری
+            </p>
+          )}
+          {!currentAnswered && isLastQuestion && (
+            <p className="text-center text-xs text-slate-400 mt-4">
+              یکی از گزینه‌ها رو انتخاب کن، سپس روی «پایان تست» بزن
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

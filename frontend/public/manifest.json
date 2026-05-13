@@ -1,0 +1,26 @@
+{
+  "name": "Raavi Platform",
+  "short_name": "Raavi",
+  "description": "پلتفرم هوشمند همنشینی راوی",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f97316",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/next.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/vercel.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,514 @@
+"use client";
+
+import { useMemo, useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  MapPin,
+  ChevronDown,
+  Check,
+  Bell,
+  Home,
+  Compass,
+  GitCompare,
+  MessageCircle,
+  User,
+  ChevronRight,
+  Brain,
+  Heart,
+  Users,
+  Zap,
+  ArrowLeft,
+} from "lucide-react";
+import { useApp } from "@/context/AppContext";
+
+// ─── City Selector ────────────────────────────────────────────────────────────
+const CITIES = [
+  "تهران",
+  "اصفهان",
+  "مشهد",
+  "شیراز",
+  "تبریز",
+  "کرج",
+  "قم",
+  "اهواز",
+  "رشت",
+  "کرمان",
+];
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  {
+    name: "سارا م.",
+    text: "با راوی هم‌نشین ایده‌آلم رو پیدا کردم. الان بهترین دوستمه!",
+    avatar: "س",
+  },
+  {
+    name: "علی ر.",
+    text: "تست شخصیت‌شناسی خیلی دقیق بود. توصیه می‌کنم.",
+    avatar: "ع",
+  },
+  {
+    name: "نیلوفر ک.",
+    text: "رویداد‌ها عالی بودن. آدم‌های جالب پیدا کردم.",
+    avatar: "ن",
+  },
+];
+
+// ─── Events ───────────────────────────────────────────────────────────────────
+const EVENTS = [
+  {
+    id: 1,
+    tag: "جدید",
+    tagColor: "#FF7A00",
+    icon: Brain,
+    title: "روانشناسی روابط عاطفی",
+    date: "۱۵ خرداد ۱۴۰۴",
+    time: "۱۸:۳۰ - ۲۰:۳۰",
+    seats: "۸/۱۰",
+    price: "رایگان",
+    status: "آنلاین",
+  },
+  {
+    id: 2,
+    icon: Users,
+    title: "کندکو معلق",
+    date: "۱۲ خرداد ۱۴۰۴",
+    time: "۱۷:۰۰ - ۱۹:۰۰",
+    seats: "۵/۱۲",
+    price: "۱۵۰,۰۰۰ت",
+    status: "آنلاین",
+  },
+  {
+    id: 3,
+    icon: Heart,
+    title: "زندگی‌های سالم ارتباطات",
+    date: "۱۸ خرداد ۱۴۰۴",
+    time: "۱۹:۰۰ - ۲۱:۰۰",
+    seats: "۱۰/۱۵",
+    price: "۸۰,۰۰۰ت",
+    status: "آنلاین",
+  },
+];
+
+// ─── FAQ ──────────────────────────────────────────────────────────────────────
+const FAQS = [
+  {
+    q: "راوی چیست؟",
+    a: "راوی یک پلتفرم هوشمند برای یافتن هم‌نشین و دوست بر اساس شخصیت واقعی شماست.",
+  },
+  {
+    q: "تطابق چگونه کار می‌کند؟",
+    a: "الگوریتم راوی بر اساس نتایج تست روان‌شناختی، بهترین هم‌نشین‌ها را برای شما پیشنهاد می‌دهد.",
+  },
+  {
+    q: "آیا اطلاعات من امن است؟",
+    a: "بله، تمامی اطلاعات با رمزنگاری پیشرفته ذخیره می‌شود و هرگز به اشخاص ثالث داده نمی‌شود.",
+  },
+];
+
+// ─── Bottom Nav ───────────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { icon: User, label: "پروفایل", href: "/dashboard/profile" },
+  { icon: MessageCircle, label: "پیام‌ها", href: "/dashboard/messages" },
+  { icon: GitCompare, label: "تطابق‌ها", href: "/dashboard/explore" },
+  { icon: Compass, label: "اکتشاف", href: "/events" },
+  { icon: Home, label: "خانه", href: "/" },
+];
+
+// ─── FAQ Item ─────────────────────────────────────────────────────────────────
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      className="border border-slate-100 rounded-2xl overflow-hidden"
+      onClick={() => setOpen((v) => !v)}
+    >
+      <button className="w-full flex items-center justify-between px-5 py-4 text-right">
+        <span className="font-bold text-slate-800 text-sm">{q}</span>
+        <ChevronDown
+          size={18}
+          className={`text-orange-500 transition-transform flex-shrink-0 mr-3 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="px-5 pb-4 text-sm text-slate-500 leading-relaxed border-t border-slate-100">
+          {a}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Event Card ───────────────────────────────────────────────────────────────
+function EventCard({ event }: { event: (typeof EVENTS)[0] }) {
+  const Icon = event.icon;
+  return (
+    <div className="flex-shrink-0 w-52 bg-white rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-md transition-shadow">
+      {event.tag && (
+        <span
+          className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white mb-2 inline-block"
+          style={{ background: event.tagColor }}
+        >
+          {event.tag}
+        </span>
+      )}
+      <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mb-3">
+        <Icon size={20} className="text-orange-500" />
+      </div>
+      <h3 className="font-bold text-slate-900 text-sm leading-snug mb-3">
+        {event.title}
+      </h3>
+      <div className="space-y-1.5 text-[11px] text-slate-400">
+        <div className="flex items-center gap-1.5">
+          <span>📅</span>
+          <span>{event.date}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span>🕐</span>
+          <span>{event.time}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span>👤</span>
+          <span>{event.seats} نفر</span>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+        <span className="text-[11px] font-bold text-orange-500">
+          {event.price}
+        </span>
+        <span className="text-[10px] bg-green-50 text-green-600 px-2 py-0.5 rounded-full font-medium">
+          {event.status}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+export default function LandingPage() {
+  const { state } = useApp();
+  const [cityOpen, setCityOpen] = useState(false);
+  const [city, setCity] = useState("تهران");
+  const [pathname, setPathname] = useState("/");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("raavi-city");
+      if (saved) setCity(saved);
+      setPathname(window.location.pathname);
+    }
+  }, []);
+
+  const selectCity = (c: string) => {
+    setCity(c);
+    if (typeof window !== "undefined") localStorage.setItem("raavi-city", c);
+    setCityOpen(false);
+  };
+
+  const ctaHref = useMemo(() => {
+    if (!state.isLoggedIn) return "/test";
+    if (!state.isProfileComplete || !state.isTestTaken)
+      return "/dashboard/complete-profile";
+    return "/events/next/booking";
+  }, [state.isLoggedIn, state.isProfileComplete, state.isTestTaken]);
+
+  return (
+    <div
+      className="min-h-screen font-sans text-slate-900 overflow-x-hidden relative bg-white pb-28 md:pb-0"
+      dir="rtl"
+    >
+      {/* ─── Background Blobs ─────────────────────────── */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div className="absolute top-0 -right-20 w-72 h-72 bg-orange-300/25 rounded-full blur-[80px] animate-blob" />
+        <div className="absolute top-1/3 -left-20 w-64 h-64 bg-yellow-300/20 rounded-full blur-[70px] animate-blob animation-delay-2000" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-orange-100/40 rounded-full blur-[90px] animate-blob animation-delay-4000" />
+      </div>
+
+      {/* ─── Top Header ───────────────────────────────── */}
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center bg-white/90 backdrop-blur-lg border-b border-slate-100 shadow-sm">
+        <div className="w-full px-4 flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-orange-500 flex items-center justify-center shadow-md">
+              <img
+                src="/logo.JPG"
+                alt="راوی"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+            </div>
+            <span className="text-xl font-black text-slate-900 group-hover:text-orange-500 transition-colors">
+              راوی
+            </span>
+          </Link>
+
+          {/* Right: Bell + City */}
+          <div className="flex items-center gap-2">
+            {/* Notification Bell (moved from bottom nav) */}
+            <Link
+              href="/dashboard/notifications"
+              className="relative w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 hover:bg-orange-50 border border-slate-200 transition-colors"
+            >
+              <Bell size={18} className="text-slate-600" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-orange-500 rounded-full border-2 border-white" />
+            </Link>
+
+            {/* City Picker */}
+            <div className="relative">
+              <button
+                onClick={() => setCityOpen((v) => !v)}
+                className="flex items-center gap-1.5 px-3 py-2 bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-xl transition-colors"
+              >
+                <MapPin size={14} className="text-orange-500" />
+                <span className="text-xs font-bold text-slate-800">{city}</span>
+                <ChevronDown
+                  size={13}
+                  className={`text-orange-500 transition-transform ${cityOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+
+              {cityOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setCityOpen(false)}
+                  />
+                  <div className="absolute top-full left-0 mt-2 w-44 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 max-h-72 overflow-y-auto">
+                    <div className="px-4 py-2 text-[10px] font-bold text-slate-400 tracking-widest uppercase border-b border-slate-100 mb-1">
+                      انتخاب شهر
+                    </div>
+                    {CITIES.map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => selectCity(c)}
+                        className={`w-full px-4 py-2.5 text-right text-sm font-medium flex items-center justify-between transition-colors ${c === city ? "text-orange-600 bg-orange-50" : "text-slate-700 hover:bg-slate-50"}`}
+                      >
+                        <span>{c}</span>
+                        {c === city && (
+                          <Check size={13} className="text-orange-500" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ─── Hero ─────────────────────────────────────── */}
+      <section className="pt-24 pb-8 px-5">
+        {/* Tagline badge */}
+        <div className="flex justify-center mb-4">
+          <span className="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 px-4 py-1.5 rounded-full">
+            با راوی هم‌صحبت واقعیت رو پیدا کن
+          </span>
+        </div>
+
+        {/* Main heading */}
+        <h1 className="text-3xl font-black text-slate-900 leading-tight text-center mb-4">
+          ارتباطی پیدا کنید که
+          <br />
+          <span className="text-orange-500 relative">
+            دقیقاً برای شماست
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-200 rounded-full" />
+          </span>
+        </h1>
+
+        {/* Description */}
+        <p className="text-sm text-slate-500 text-center leading-relaxed mb-8 max-w-xs mx-auto">
+          تطابق‌های معنادار اتفاق واقعی بر اساس درک عمیق از شما
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col gap-3 max-w-xs mx-auto">
+          <Link href={ctaHref}>
+            <button className="w-full bg-orange-500 text-white px-6 py-3.5 rounded-2xl font-bold text-base shadow-lg shadow-orange-200 hover:bg-orange-600 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <span>← شروع کنید</span>
+            </button>
+          </Link>
+          <Link href="/events">
+            <button className="w-full bg-white text-slate-700 px-6 py-3.5 rounded-2xl font-bold text-base border border-slate-200 hover:border-orange-300 active:scale-95 transition-all">
+              بیشتر بدانید
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* ─── Events Section ───────────────────────────── */}
+      <section className="py-6 px-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-black text-slate-900">
+            همنشینی‌های پیش رو
+          </h2>
+          <Link
+            href="/events"
+            className="text-xs font-bold text-orange-500 flex items-center gap-1"
+          >
+            مشاهده همه <ArrowLeft size={13} />
+          </Link>
+        </div>
+
+        {/* Horizontal scroll cards */}
+        <div className="flex gap-3 overflow-x-auto pb-3 -mx-5 px-5 scrollbar-hide">
+          {EVENTS.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+
+        {/* Personality Test Button */}
+        <Link href="/test" className="mt-4 block">
+          <div className="bg-slate-900 text-white rounded-2xl px-5 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-slate-400 mb-0.5">کتابخانه راوی</p>
+              <p className="font-bold text-sm">تست شخصیت‌شناسی</p>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
+              <Brain size={20} className="text-orange-400" />
+            </div>
+          </div>
+        </Link>
+      </section>
+
+      {/* ─── Discover Section (همین بمونه) ────────────── */}
+      <section className="py-6 px-5">
+        <div className="bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 rounded-3xl p-5">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+              <Zap size={28} className="text-orange-500" fill="currentColor" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-black text-slate-900 text-base mb-1">
+                خود واقعی‌تان را کشف کنید
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed mb-4">
+                تست شخصیت راوی به شما کمک می‌کند تا ارزش‌ها، علایق و ارتباطات
+                خود را بهتر بشناسید و هم‌نشین مناسب را پیدا کنید.
+              </p>
+              <Link href={ctaHref}>
+                <button className="bg-orange-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md shadow-orange-200 hover:bg-orange-600 active:scale-95 transition-all flex items-center gap-2">
+                  <span>بزن بریم</span>
+                  <span>←</span>
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Testimonials ─────────────────────────────── */}
+      <section className="py-6 px-5">
+        <div className="text-center mb-5">
+          <span className="text-[10px] font-bold text-orange-500 tracking-widest uppercase">
+            نظرات کاربران
+          </span>
+          <h2 className="text-lg font-black text-slate-900 mt-1">
+            تجربه کاربران راوی
+          </h2>
+        </div>
+        <div className="space-y-3">
+          {TESTIMONIALS.map((t, i) => (
+            <div
+              key={i}
+              className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm flex-shrink-0">
+                  {t.avatar}
+                </div>
+                <span className="font-bold text-sm text-slate-800">
+                  {t.name}
+                </span>
+                <div className="flex gap-0.5 mr-auto">
+                  {[...Array(5)].map((_, j) => (
+                    <span key={j} className="text-orange-400 text-xs">
+                      ★
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <p className="text-xs text-slate-500 leading-relaxed">{t.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── FAQ ──────────────────────────────────────── */}
+      <section className="py-6 px-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-black text-slate-900">سوالات متداول</h2>
+        </div>
+        <div className="space-y-2">
+          {FAQS.map((faq, i) => (
+            <FAQItem key={i} q={faq.q} a={faq.a} />
+          ))}
+        </div>
+      </section>
+
+      {/* ─── Final CTA ────────────────────────────────── */}
+      <section className="px-5 py-6 mb-4">
+        <div className="bg-slate-900 rounded-3xl px-6 py-8 text-center relative overflow-hidden">
+          <div className="absolute -top-8 -right-8 w-32 h-32 bg-orange-500/20 rounded-full blur-2xl" />
+          <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-orange-600/10 rounded-full blur-2xl" />
+          <p className="text-slate-400 text-xs mb-1 relative z-10">آماده‌ای؟</p>
+          <h2 className="text-xl font-black text-white mb-3 relative z-10">
+            هم‌نشین خودت را پیدا کنی؟
+          </h2>
+          <p className="text-slate-400 text-xs leading-relaxed mb-6 relative z-10">
+            با یک تست ۱۵ دقیقه‌ای شروع کن
+          </p>
+          <Link href={ctaHref} className="relative z-10 inline-block">
+            <button className="bg-orange-500 text-white px-8 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-orange-900/30 hover:bg-orange-400 active:scale-95 transition-all">
+              بزن بریم ←
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* ─── Footer ───────────────────────────────────── */}
+      <footer className="px-5 pb-4 text-center">
+        <p className="text-xs text-slate-400">
+          © ۱۴۰۴ راوی. تمامی حقوق محفوظ است.
+        </p>
+      </footer>
+
+      {/* ─── Bottom Navigation (Navy + Orange Icons) ──── */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+        style={{ background: "#0B1F3A" }}
+      >
+        <div className="flex items-center justify-around px-2 py-2 pb-safe">
+          {NAV_ITEMS.map(({ icon: Icon, label, href }) => {
+            const isActive =
+              href === "/" ? pathname === "/" : pathname.startsWith(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl transition-all"
+              >
+                <Icon
+                  size={22}
+                  strokeWidth={isActive ? 2.5 : 1.8}
+                  className={isActive ? "text-orange-500" : "text-slate-400"}
+                />
+                <span
+                  className={`text-[9px] font-medium transition-colors ${isActive ? "text-orange-500" : "text-slate-500"}`}
+                >
+                  {label}
+                </span>
+                {isActive && (
+                  <span className="w-1 h-1 bg-orange-500 rounded-full shadow-[0_0_6px_rgba(249,115,22,0.8)]" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </div>
+  );
+}

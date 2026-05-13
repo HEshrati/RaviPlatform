@@ -1,0 +1,41 @@
+import {
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
+import { ProfilesService } from './profiles.service';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+@Controller('api/profiles')
+@UseGuards(JwtAuthGuard)
+export class ProfilesController {
+  constructor(private profilesService: ProfilesService) {}
+
+  @Get('me')
+  async getMyProfile(@Request() req) {
+    return await this.profilesService.findByUserId(req.user.id);
+  }
+
+  @Patch('me')
+  async updateMyProfile(@Request() req, @Body() updateProfileDto: UpdateProfileDto) {
+    return await this.profilesService.update(req.user.id, updateProfileDto);
+  }
+
+  @Post('me/complete')
+  async completeProfile(@Request() req) {
+    const profile = await this.profilesService.completeProfile(req.user.id);
+
+    return {
+      message: 'پروفایل با موفقیت تکمیل شد',
+      profile: {
+        is_complete: true,
+        completion_percentage: profile.profile_completion_percentage,
+      },
+    };
+  }
+}

@@ -1,0 +1,30 @@
+"use client";
+
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useApp } from "@/context/AppContext";
+
+export default function VerifyMobilePage() {
+  const [code, setCode] = useState("");
+  const { dispatch } = useApp();
+  const router = useRouter();
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (code.length < 4) return;
+    dispatch({ type: "LOGIN" });
+    router.push("/dashboard/personality-test");
+  };
+
+  return (
+    <div className="min-h-screen bg-[#0B1F3A] flex items-center justify-center p-4">
+      <form onSubmit={submit} className="w-full max-w-md bg-[#112b4c] border border-[#1f4673] rounded-3xl p-6 text-white">
+        <h1 className="text-2xl font-black text-[#FF7A00] mb-2">تایید شماره موبایل</h1>
+        <p className="text-slate-300 mb-5">کد ارسال شده را وارد کنید</p>
+        <input value={code} onChange={(e) => setCode(e.target.value)} className="w-full rounded-xl bg-[#0B1F3A] border border-[#1f4673] px-4 py-3 text-center tracking-[0.5rem]" maxLength={6} />
+        <button className="w-full mt-4 bg-[#FF7A00] rounded-xl py-3 font-bold">تایید و ادامه</button>
+      </form>
+    </div>
+  );
+}
