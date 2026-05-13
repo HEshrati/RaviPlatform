@@ -12,6 +12,12 @@ const PUBLIC_ROUTES = [
   "/events",
   "/test",
   "/verify-mobile",
+  "/articles",
+  "/article",
+  "/collaboration",
+  "/content",
+  "/terms",
+  "/privacy",
 ];
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
