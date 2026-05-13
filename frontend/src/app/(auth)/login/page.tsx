@@ -6,6 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useApp } from "@/context/AppContext";
 import { testimonialsData } from "@/lib/testimonials";
+import { Stethoscope, Users, GraduationCap, ShieldCheck, ChevronLeft } from "lucide-react";
+
+type UserRole = "user" | "psychologist" | "collaborator" | "facilitator";
 
 type Mode = "login" | "signup";
 
@@ -38,6 +41,9 @@ function LoginPageInner() {
   const [mounted, setMounted] = useState(false);
   const [testimonialIdx, setTestimonialIdx] = useState(0);
   const [fade, setFade] = useState(true);
+  const [userRole, setUserRole] = useState<UserRole>("user");
+  const [medicalCode, setMedicalCode] = useState("");
+  const [medicalCodeError, setMedicalCodeError] = useState("");
 
   const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -58,6 +64,13 @@ function LoginPageInner() {
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setMedicalCodeError("");
+    if (userRole === "psychologist") {
+      if (!medicalCode || medicalCode.length < 5) {
+        setMedicalCodeError("لطفاً کد نظام پزشکی معتبر وارد کنید (حداقل ۵ رقم)");
+        return;
+      }
+    }
     if (!isValidPhone(phone))
       return setError("شماره موبایل معتبر نیست. مثال: 09123456789");
     if (mode === "signup") {
@@ -110,7 +123,11 @@ function LoginPageInner() {
       const res = await fetch(`${API}/api/auth/request-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: phone.replace(/\s/g, "") }),
+        body: JSON.stringify({
+          phone: phone.replace(/\s/g, ""),
+          role: userRole !== "user" ? userRole : undefined,
+          medicalCode: userRole === "psychologist" ? medicalCode : undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "خطا در ارسال کد");
@@ -205,12 +222,16 @@ function LoginPageInner() {
 
             {!otpSent ? (
               <>
-                <div className="mb-6">
+                <div className="mb-6 text-center">
                   <h2 className="text-2xl font-black text-white">
-                    به پلتفرم راوی خوش آمدید
+                    {userRole === "psychologist" ? "ورود روانشناسان" : userRole === "collaborator" ? "ورود همکاران" : userRole === "facilitator" ? "ورود تسهیلگران" : "به پلتفرم راوی خوش آمدید"}
                   </h2>
                   <p className="text-slate-400 mt-1 text-sm">
-                    {mode === "login"
+                    {userRole !== "user" ? (
+                      <button onClick={() => { setUserRole("user"); setMedicalCode(""); setMedicalCodeError(""); setError(""); }} className="inline-flex items-center gap-1 text-orange-400 hover:text-orange-300 transition text-xs mt-1">
+                        <ChevronLeft size={14} /> بازگشت به ورود عادی
+                      </button>
+                    ) : mode === "login"
                       ? "لطفا برای ادامه شماره موبایل خود را وارد کنید."
                       : "اطلاعات خود را برای ثبت‌نام وارد کنید."}
                   </p>
@@ -380,15 +401,58 @@ function LoginPageInner() {
             )}
           </div>
 
+          {/* Professional Entry Buttons */}
           <div className="relative z-10 mt-6 space-y-3">
             <div className="border-t border-white/10 pt-4">
-              <Link href="/cafe/login">
-                <button className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold py-3 rounded-2xl transition shadow-md active:scale-[0.98]">
-                  <span>☕</span>
-                  ورود همکاران
-                </button>
-              </Link>
+              <p className="text-center text-xs text-slate-500 mb-3 font-bold">ورود ویژه حرفه‌ای‌ها</p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { role: "psychologist" as UserRole, label: "روانشناسان", desc: "ورود با کد نظام", icon: Stethoscope, gradient: "from-emerald-500 to-teal-600", shadow: "shadow-emerald-500/20", glow: "bg-emerald-400/20" },
+                  { role: "collaborator" as UserRole, label: "همکاران", desc: "پنل همکاری", icon: Users, gradient: "from-blue-500 to-indigo-600", shadow: "shadow-blue-500/20", glow: "bg-blue-400/20" },
+                  { role: "facilitator" as UserRole, label: "تسهیلگران", desc: "مدیریت رویداد", icon: GraduationCap, gradient: "from-purple-500 to-violet-600", shadow: "shadow-purple-500/20", glow: "bg-purple-400/20" },
+                ].map((item) => (
+                  <button
+                    key={item.role}
+                    onClick={() => { setUserRole(item.role); setError(""); setMedicalCode(""); setMedicalCodeError(""); }}
+                    className={`group relative flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all duration-300 hover:-translate-y-1 active:scale-95 overflow-hidden ${
+                      userRole === item.role
+                        ? `bg-gradient-to-br ${item.gradient} border-transparent text-white shadow-lg ${item.shadow}`
+                        : "border-white/10 hover:border-white/20 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10"
+                    }`}
+                  >
+                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${item.glow} blur-xl`} />
+                    <div className="relative z-10">
+                      <item.icon size={20} strokeWidth={2} className={`transition-transform duration-300 group-hover:scale-110 ${userRole === item.role ? "animate-pulse" : ""}`} />
+                    </div>
+                    <span className="relative z-10 text-[11px] font-black leading-tight">{item.label}</span>
+                    <span className={`relative z-10 text-[9px] leading-tight ${userRole === item.role ? "text-white/70" : "text-slate-500"}`}>{item.desc}</span>
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Medical Code Input for Psychologists */}
+            {userRole === "psychologist" && !otpSent && (
+              <div className="animate-in slide-in-from-top-2 duration-300">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <ShieldCheck size={16} className="text-emerald-400" />
+                    <span className="text-xs font-black text-emerald-400">احراز هویت نظام پزشکی</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={medicalCode}
+                    onChange={(e) => { setMedicalCode(e.target.value.replace(/[^\d]/g, "")); setMedicalCodeError(""); }}
+                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white text-center tracking-widest outline-none focus:ring-2 focus:ring-emerald-400 transition placeholder:text-slate-500"
+                    placeholder="کد نظام پزشکی را وارد کنید"
+                    dir="ltr"
+                    maxLength={10}
+                  />
+                  {medicalCodeError && <p className="text-red-400 text-xs mt-2 text-center">{medicalCodeError}</p>}
+                  <p className="text-slate-500 text-[10px] mt-2 text-center">کد ۵ تا ۱۰ رقمی نظام پزشکی خود را وارد نمایید</p>
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-center gap-4 text-xs text-slate-400">
               <Link href="/terms" className="hover:text-slate-300 transition">
