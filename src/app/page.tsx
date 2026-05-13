@@ -3,9 +3,10 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { useAppContext } from "@/context/AppContext";
-import MobileNavbar from "@/components/MobileNavbar";
+import BottomNav from "@/components/BottomNav";
 import Hero from "@/components/landing/Hero";
 import Features from "@/components/landing/Features";
+import ArticlesPreviewSection from "@/components/landing/ArticlesPreviewSection";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import FAQ from "@/components/landing/FAQ";
 import Header from "@/components/landing/Header";
@@ -25,8 +26,8 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen font-sans text-slate-900 overflow-x-hidden relative bg-transparent">
-      {/* Mobile Navbar Floating */}
-      <MobileNavbar />
+      {/* Bottom Navigation */}
+      <BottomNav />
 
       {/* Background Animated Blobs - با شفافیت بیشتر */}
       <div className="fixed inset-0 pointer-events-none -z-20 overflow-hidden bg-transparent">
@@ -44,6 +45,9 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <Features />
+
+      {/* Articles Preview Section */}
+      <ArticlesPreviewSection />
 
       {/* Testimonials Section */}
       <Reveal

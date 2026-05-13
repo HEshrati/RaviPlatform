@@ -2,13 +2,22 @@
 
 import React, { createContext, useContext, useReducer, useEffect, ReactNode, Dispatch } from "react";
 
+// تعریف User Type
+type User = {
+  mobileNumber?: string | null;
+  role?: string | null;
+  name?: string | null;
+};
+
 // تعریف State Type
 type State = {
   isLoggedIn: boolean;
   isProfileComplete: boolean;
   isTestTaken: boolean;
+  isLoading: boolean;
   userCity: string | null;
   paymentSuccess: boolean;
+  user: User | null;
 };
 
 // تعریف Action Types
@@ -19,6 +28,8 @@ type Action =
   | { type: "TAKE_TEST" }
   | { type: "SET_CITY"; payload: string | null }
   | { type: "SET_PAYMENT_SUCCESS"; payload: boolean }
+  | { type: "SET_USER"; payload: User | null }
+  | { type: "SET_LOADING"; payload: boolean }
   | { type: "LOAD_STATE"; payload: Partial<State> };
 
 // Initial State
@@ -26,8 +37,10 @@ const initialState: State = {
   isLoggedIn: false,
   isProfileComplete: false,
   isTestTaken: false,
+  isLoading: true,
   userCity: null,
   paymentSuccess: false,
+  user: null,
 };
 
 // Reducer Function
@@ -47,6 +60,7 @@ function appReducer(state: State, action: Action): State {
         isTestTaken: false,
         userCity: null,
         paymentSuccess: false,
+        user: null,
       };
     
     case "COMPLETE_PROFILE":
@@ -73,6 +87,18 @@ function appReducer(state: State, action: Action): State {
         paymentSuccess: action.payload,
       };
     
+    case "SET_USER":
+      return {
+        ...state,
+        user: action.payload,
+      };
+
+    case "SET_LOADING":
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+
     case "LOAD_STATE":
       return {
         ...state,
@@ -116,6 +142,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Error loading state from localStorage:", error);
     }
+    dispatch({ type: "SET_LOADING", payload: false });
   }, []);
 
   return (
@@ -142,5 +169,13 @@ export const appActions = {
   takeTest: () => ({ type: "TAKE_TEST" as const }),
   setCity: (city: string | null) => ({ type: "SET_CITY" as const, payload: city }),
   setPaymentSuccess: (success: boolean) => ({ type: "SET_PAYMENT_SUCCESS" as const, payload: success }),
+  setUser: (user: User | null) => ({ type: "SET_USER" as const, payload: user }),
   loadState: (state: Partial<State>) => ({ type: "LOAD_STATE" as const, payload: state }),
 };
+
+// useApp hook — wrapper for BottomNav and other components
+export function useApp() {
+  const { state, dispatch } = useAppContext();
+  const logout = () => dispatch(appActions.logout());
+  return { state, dispatch, logout };
+}
