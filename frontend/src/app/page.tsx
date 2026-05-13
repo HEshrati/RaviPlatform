@@ -7,6 +7,7 @@ import Footer from "@/components/landing/Footer";
 import FAQ from "@/components/landing/FAQ";
 import ArticlesPreviewSection from "@/components/ArticlesPreviewSection";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import RaviRecommendations from "@/components/landing/RaviRecommendations";
 import {
   Bell,
   Home,
@@ -16,6 +17,8 @@ import {
   ArrowLeft,
   Sparkles,
   MessageCircle,
+  Brain,
+  ChevronDown,
 } from "lucide-react";
 
 /* ── پس‌زمینه متحرک ──────────────────────────────────────── */
@@ -421,13 +424,18 @@ export default function HomePage() {
             </div>
           </section>
 
+          {/* ─── پیشنهاد راوی به شما ─── */}
+          <section className="w-full mb-10">
+            <RaviRecommendations />
+          </section>
+
           {/* ─── کتابخانه راوی (ArticlesPreviewSection دارای هدر خودشه) ─── */}
           <section className="w-full mb-10">
             <ArticlesPreviewSection />
           </section>
 
           {/* ─── کشف خود ─── */}
-          <section className="max-w-lg mx-auto md:max-w-none mb-10">
+          <section id="ravi-tests" className="max-w-lg mx-auto md:max-w-none mb-10">
             <div
               className="rounded-3xl p-5 md:p-8 relative overflow-hidden"
               style={{
@@ -502,6 +510,23 @@ export default function HomePage() {
 
         <Footer />
       </div>
+
+      {/* ── دکمه اسکرول خودکار به تست روان ── */}
+      <button
+        onClick={() => {
+          const el = document.getElementById("ravi-tests");
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }}
+        className="fixed left-4 bottom-24 md:bottom-8 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl font-black text-white text-xs transition-all active:scale-95 hover:opacity-90 shadow-xl"
+        style={{
+          background: "linear-gradient(135deg, #FF6B00, #FF9A3C)",
+          boxShadow: "0 8px 28px rgba(255,107,0,0.35)",
+        }}
+      >
+        <Brain size={16} />
+        تست روان‌شناسی
+        <ChevronDown size={14} />
+      </button>
 
       <BottomNav />
     </>
