@@ -233,7 +233,40 @@ ${theme.pattern}
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
-/* ── API اصلی ── */
+/* ── مسیر فایل‌های واقعی ── */
+const EVENT_REAL: Record<string, string> = {
+  hambazi:    "/images/events/hambazi.jpg",
+  hamneshin:  "/images/events/hamneshin.jpg",
+  hamgharar:  "/images/events/hamgharar.jpg",
+  hamsohbat:  "/images/events/hamsohbat.jpg",
+  hampa:      "/images/events/hampa.jpg",
+  hamghadam:  "/images/events/hamghadam.jpg",
+  hamamooz:   "/images/events/hamamooz.jpg",
+  hamkar:     "/images/events/hamkar.jpg",
+  hamfekr:    "/images/events/hamfekr.jpg",
+  hamteymi:   "/images/events/hamteymi.jpg",
+  hamghesse:  "/images/events/hamghesse.jpg",
+  hamvision:  "/images/events/hamvision.jpg",
+  hamhonar:   "/images/events/hamhonar.jpg",
+  hamvarzesh: "/images/events/hamvarzesh.jpg",
+  hamnegah:   "/images/events/hamnegah.jpg",
+  hamziste:   "/images/events/hamziste.jpg",
+  hamravan:   "/images/events/hamravan.jpg",
+  dustravan:  "/images/events/dustravan.jpg",
+  default:    "/images/events/default.jpg",
+};
+
+const ARTICLE_REAL: Record<string, string> = {
+  attachment:    "/images/articles/attachment.jpg",
+  communication: "/images/articles/communication.jpg",
+  emotion:       "/images/articles/emotion.jpg",
+  social:        "/images/articles/social.jpg",
+  psychology:    "/images/articles/psychology.jpg",
+  relationship:  "/images/articles/relationship.jpg",
+  default:       "/images/articles/default.jpg",
+};
+
+/* ── API اصلی — عکس واقعی اول، SVG به عنوان fallback ── */
 
 export function getEventImage(
   category?: string,
@@ -241,13 +274,31 @@ export function getEventImage(
   _fallback?: string
 ): string {
   const cat = (category || "default").toLowerCase();
+  return EVENT_REAL[cat] || EVENT_REAL.default;
+}
+
+export function getEventImageFallback(category?: string): string {
+  const cat = (category || "default").toLowerCase();
   const theme = EVENT_THEMES[cat] || EVENT_THEMES.default;
   return buildThemedSVG(theme, 400, 220, `ev-${cat}`);
 }
 
-export function getEventImageFallback(category?: string): string {
-  return getEventImage(category);
-}
+const TOPIC_MAPPING: [string[], string][] = [
+  [["game", "board", "بازی"], "hambazi"],
+  [["coffee", "cafe", "کافه", "نشین"], "hamneshin"],
+  [["breakfast", "food", "صبحانه", "غذا"], "hamgharar"],
+  [["walk", "hike", "nature", "پیاده", "طبیعت"], "hamghadam"],
+  [["art", "music", "هنر", "نقاشی"], "hamhonar"],
+  [["study", "learn", "یادگیری", "آموز"], "hamamooz"],
+  [["sport", "ورزش"], "hamvarzesh"],
+  [["team", "تیم"], "hamteymi"],
+  [["conversation", "گفت", "صحبت"], "hamsohbat"],
+  [["story", "book", "قصه", "کتاب"], "hamghesse"],
+  [["idea", "فکر", "ایده"], "hamfekr"],
+  [["therapy", "روان", "مشاور"], "hamravan"],
+  [["coexist", "زیست"], "hamziste"],
+  [["friend", "دوست", "روانشناس"], "dustravan"],
+];
 
 export function getTopicImage(
   topic: string,
@@ -256,41 +307,21 @@ export function getTopicImage(
   _h = 400
 ): string {
   const t = topic.toLowerCase();
-  const mapping: [string[], string][] = [
-    [["game", "board", "بازی"], "hambazi"],
-    [["coffee", "cafe", "کافه", "نشین"], "hamneshin"],
-    [["breakfast", "food", "صبحانه", "غذا"], "hamgharar"],
-    [["walk", "hike", "nature", "پیاده", "طبیعت"], "hamghadam"],
-    [["art", "music", "هنر", "نقاشی"], "hamhonar"],
-    [["study", "learn", "یادگیری", "آموز"], "hamamooz"],
-    [["sport", "ورزش"], "hamvarzesh"],
-    [["team", "تیم"], "hamteymi"],
-    [["conversation", "گفت", "صحبت"], "hamsohbat"],
-    [["story", "book", "قصه", "کتاب"], "hamghesse"],
-    [["idea", "فکر", "ایده"], "hamfekr"],
-    [["therapy", "روان", "مشاور"], "hamravan"],
-    [["coexist", "زیست"], "hamziste"],
-    [["friend", "دوست", "روانشناس"], "dustravan"],
-  ];
-
-  for (const [keywords, cat] of mapping) {
+  for (const [keywords, cat] of TOPIC_MAPPING) {
     if (keywords.some((k) => t.includes(k))) {
-      const theme = EVENT_THEMES[cat] || EVENT_THEMES.default;
-      return buildThemedSVG(theme, _w, _h, `tp-${cat}`);
+      return EVENT_REAL[cat] || EVENT_REAL.default;
     }
   }
-  return buildThemedSVG(EVENT_THEMES.default, _w, _h, "tp-def");
+  return EVENT_REAL.default;
 }
 
 export function getArticleImage(category: string): string {
   const cat = category.toLowerCase();
-  const theme = ARTICLE_THEMES[cat] || ARTICLE_THEMES.default;
-  return buildThemedSVG(theme, 400, 220, `ar-${cat}`);
+  return ARTICLE_REAL[cat] || ARTICLE_REAL.default;
 }
 
 export function getCategoryIcon(categoryId: string, _size = 200): string {
-  const theme = EVENT_THEMES[categoryId] || EVENT_THEMES.default;
-  return buildThemedSVG(theme, _size, _size, `cat-${categoryId}`);
+  return EVENT_REAL[categoryId] || EVENT_REAL.default;
 }
 
 export function getInitialsAvatar(seed: string, _size = 128): string {
