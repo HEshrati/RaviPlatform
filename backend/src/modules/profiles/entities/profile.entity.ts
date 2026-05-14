@@ -1,0 +1,92 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+
+@Entity('profiles')
+export class Profile {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'uuid' })
+  user_id: string;
+
+  @Column({ nullable: true })
+  first_name: string;
+
+  @Column({ nullable: true })
+  last_name: string;
+
+  @Column({ nullable: true })
+  gender: string;
+
+  @Column({ type: 'date', nullable: true })
+  birth_date: Date;
+
+  @Column({ nullable: true })
+  marital_status: string;
+
+  @Column({ nullable: true })
+  education_level: string;
+
+  @Column({ nullable: true })
+  religious_intensity: string;
+
+  @Column({ nullable: true })
+  smoking_status: string;
+
+  @Column({ nullable: true })
+  alcohol_status: string;
+
+  @Column({ type: 'text', nullable: true })
+  bio: string;
+
+  @Column({ type: 'text', nullable: true })
+  bio_vector: string;
+
+  @Column({ nullable: true })
+  city: string;
+
+  @Column({ nullable: true })
+  neighborhood: string;
+
+  // ── سن ──
+  @Column({ type: 'int', nullable: true })
+  age: number;
+
+  // ── علایق ──
+  @Column({ type: 'simple-array', nullable: true })
+  interests: string[];
+
+  // ── آواتار - آپلود از سیستم ──
+  @Column({ type: 'text', nullable: true })
+  avatar_url: string;
+
+  @Column({ type: 'int', default: 0 })
+  profile_completion_percentage: number;
+
+  @Column({ default: true })
+  is_public: boolean;
+
+  @Column({ default: 0 })
+  profile_views: number;
+
+  @Column({ type: 'timestamp', nullable: true })
+  last_active: Date;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @OneToOne(() => User, (user) => user.profile)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+}

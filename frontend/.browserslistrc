@@ -1,0 +1,9 @@
+[production]
+chrome >= 90
+firefox >= 90
+safari >= 14
+edge >= 90
+ios_saf >= 14
+not dead
+not ie 11
+not op_mini all
