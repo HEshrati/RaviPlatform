@@ -7,8 +7,10 @@ import { useApp } from "@/context/AppContext";
 import Link from "next/link";
 import {
   Sparkles, Zap, Clock, MapPin, Users, Filter,
-  LayoutGrid, List, ChevronLeft, Heart, Calendar, Globe
+  LayoutGrid, List, ChevronLeft, Heart, Calendar, Globe, Brain, AlertCircle
 } from "lucide-react";
+import { getSmartRecommendations } from "@/lib/matching-engine";
+import type { UserProfile, MatchedEvent, MatchedTherapist } from "@/lib/matching-engine";
 
 // ─── تایپ‌ها ────────────────────────────────────────────────────
 interface RecommendedEvent {
@@ -106,7 +108,11 @@ export default function RecommendationsPage() {
   const [loading, setLoading] = useState(true);
 
   const userName = state.user?.name || "کاربر";
-  const userCity = (state.user as any)?.city || (state.user as any)?.profile?.city || "";
+  const userCity = state.city || (state.user as any)?.city || "";
+  const [smartRecs, setSmartRecs] = useState<{
+    events: MatchedEvent[]; therapists: MatchedTherapist[];
+    detectedProblems: string[]; detectedInterests: string[];
+  } | null>(null);
 
   useEffect(() => {
     // دریافت پیشنهادات از API
@@ -126,6 +132,22 @@ export default function RecommendationsPage() {
       .finally(() => setLoading(false));
 
     setTimeout(() => setLoading(false), 0);
+
+    // الگوریتم مچینگ هوشمند
+    try {
+      const storedTests = JSON.parse(localStorage.getItem("testResults") || "{}");
+      const profile: UserProfile = {
+        city: userCity,
+        mbtiType: (state.user as any)?.mbtiType || localStorage.getItem("mbtiType") || undefined,
+        testResults: Object.entries(storedTests).reduce((acc, [k, v]) => {
+          acc[k] = v as { score: number; label: string };
+          return acc;
+        }, {} as Record<string, { score: number; label: string }>),
+        interests: (state.user as any)?.interests || [],
+      };
+      const recs = getSmartRecommendations(profile);
+      setSmartRecs(recs);
+    } catch {}
   }, []);
 
   const filtered = events.filter(ev => {
@@ -219,6 +241,81 @@ export default function RecommendationsPage() {
             </div>
           </div>
         </div>
+
+        {/* ── تحلیل هوشمند (از الگوریتم مچینگ) ── */}
+        {smartRecs && (smartRecs.detectedProblems.length > 0 || smartRecs.events.length > 0) && (
+          <div className="mb-6 space-y-4">
+            {/* مشکلات و علایق شناسایی‌شده */}
+            {smartRecs.detectedProblems.length > 0 && (
+              <div className="rounded-2xl p-4"
+                style={{ background: "rgba(99,102,241,0.06)", border: "1px solid rgba(99,102,241,0.15)" }}>
+                <div className="flex items-center gap-2 mb-2">
+                  <Brain size={16} className="text-indigo-400" />
+                  <span className="text-sm font-black text-slate-900">تحلیل هوشمند راوی</span>
+                </div>
+                <p className="text-xs text-slate-500 leading-6 mb-3">
+                  بر اساس نتایج تست‌هایتان، این حوزه‌ها شناسایی شدند:
+                </p>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {smartRecs.detectedProblems.map((p) => (
+                    <span key={p} className="px-3 py-1 rounded-full text-xs font-bold"
+                      style={{ background: "rgba(244,63,94,0.1)", color: "#f43f5e", border: "1px solid rgba(244,63,94,0.2)" }}>
+                      {p}
+                    </span>
+                  ))}
+                </div>
+                {smartRecs.therapists.length > 0 && (
+                  <div className="space-y-2 mt-3">
+                    <p className="text-xs font-bold text-slate-700">پیشنهاد متخصص:</p>
+                    {smartRecs.therapists.map((t) => (
+                      <Link key={t.type} href={`/dashboard/my-therapist/${t.type}`}
+                        className="flex items-center gap-3 p-3 rounded-xl transition-all hover:-translate-y-0.5"
+                        style={{ background: "white", border: "1px solid rgba(0,0,0,0.06)" }}>
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
+                          style={{ background: t.type === "ham-ravan" ? "rgba(255,107,0,0.1)" : "rgba(99,102,241,0.1)" }}>
+                          {t.type === "ham-ravan" ? "💜" : "🌿"}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-slate-900">{t.title}</p>
+                          <p className="text-[10px] text-slate-500">موضوعات: {t.topics.join("، ")}</p>
+                        </div>
+                        <div className="text-xs font-black px-2 py-1 rounded-full"
+                          style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>
+                          {t.matchScore}٪
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ایونت‌های پیشنهادی از مچینگ */}
+            {smartRecs.events.length > 0 && (
+              <div className="rounded-2xl p-4"
+                style={{ background: "rgba(255,107,0,0.04)", border: "1px solid rgba(255,107,0,0.12)" }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles size={16} className="text-orange-400" />
+                  <span className="text-sm font-black text-slate-900">ایونت‌های پیشنهادی بر اساس تست‌ها</span>
+                </div>
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {smartRecs.events.slice(0, 6).map((ev) => (
+                    <Link key={ev.categoryId} href={`/events/category/${ev.categoryId}`}
+                      className="flex-shrink-0 w-32 rounded-xl p-3 text-center transition-all hover:-translate-y-1"
+                      style={{ background: "white", border: "1px solid rgba(0,0,0,0.06)" }}>
+                      <div className="text-xs font-black text-slate-900 mb-1">{ev.categoryTitle}</div>
+                      <div className="text-[10px] text-slate-500 mb-2 line-clamp-1">{ev.reason}</div>
+                      <div className="text-xs font-black px-2 py-0.5 rounded-full inline-block"
+                        style={{ background: "rgba(255,107,0,0.1)", color: "#FF6B00" }}>
+                        {ev.matchScore}٪ تطابق
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ── فیلترها + توگل ویو ── */}
         <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1 scrollbar-hide">

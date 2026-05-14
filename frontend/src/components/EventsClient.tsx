@@ -21,6 +21,7 @@ import {
   Filter,
 } from "lucide-react";
 import type { ApiEvent } from "@/lib/api";
+import { filterEventsByCity } from "@/lib/matching-engine";
 
 // ─── کتگوری‌های سرگرمی (همون ۹ تای قبلی) ─────────────────────────────
 const FUN_CATEGORIES = [
@@ -74,23 +75,29 @@ export default function EventsClient({ initialEvents }: Props) {
   const [search, setSearch] = useState("");
 
   const userName = state.user?.name?.split(" ")[0] || "دوست راوی";
+  const userCity = state.city || state.user?.city || null;
+
+  const cityFilteredEvents = useMemo(
+    () => filterEventsByCity(initialEvents, userCity),
+    [initialEvents, userCity]
+  );
 
   const eventCountByCategory = useMemo(
-    () => initialEvents.reduce<Record<string, number>>((acc, ev) => {
+    () => cityFilteredEvents.reduce<Record<string, number>>((acc, ev) => {
       const c = (ev as any).category || ev.event_type;
       if (c) acc[c] = (acc[c] || 0) + 1;
       return acc;
     }, {}),
-    [initialEvents]
+    [cityFilteredEvents]
   );
 
   const filteredEvents = useMemo(
     () => search
-      ? initialEvents.filter((e) =>
+      ? cityFilteredEvents.filter((e) =>
           e.title?.toLowerCase().includes(search.toLowerCase()),
         )
-      : initialEvents,
-    [initialEvents, search]
+      : cityFilteredEvents,
+    [cityFilteredEvents, search]
   );
 
   return (
@@ -118,6 +125,11 @@ export default function EventsClient({ initialEvents }: Props) {
               <Sparkles size={16} className="text-orange-500" />
             </div>
             <h1 className="text-base font-black text-slate-900">همنشینی‌ها</h1>
+            {userCity && (
+              <span className="flex items-center gap-1 text-[11px] text-slate-500 mr-2">
+                <MapPin size={11} />{userCity}
+              </span>
+            )}
           </div>
         </div>
       </div>
