@@ -25,8 +25,9 @@ import {
   AlertSeverity,
 } from './entities/crm-ai-alert.entity';
 
-const AI_API_URL = (process.env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com/v1') + '/messages';
-const AI_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+const AI_API_URL = (process.env.AI_BASE_URL || 'https://api.gapgpt.app/v1') + '/chat/completions';
+const AI_API_KEY = process.env.AI_API_KEY || process.env.ANTHROPIC_API_KEY || '';
+const AI_MODEL = process.env.AI_MODEL || 'gpt-4o-mini';
 
 // ── DTO داخلی برای ثبت رویداد ─────────────────────────────────
 export interface TrackEventDto {
@@ -313,7 +314,7 @@ export class CrmService {
     };
 
     if (!AI_API_KEY) {
-      this.logger.warn('ANTHROPIC_API_KEY تنظیم نشده — تحلیل AI انجام نمی‌شود');
+      this.logger.warn('AI_API_KEY تنظیم نشده — تحلیل AI انجام نمی‌شود');
       return null;
     }
 
@@ -347,18 +348,17 @@ ${JSON.stringify(rawData, null, 2)}
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': AI_API_KEY,
-          'anthropic-version': '2023-06-01',
+          'Authorization': `Bearer ${AI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929',
+          model: AI_MODEL,
           max_tokens: 800,
           messages: [{ role: 'user', content: prompt }],
         }),
       });
 
       const data = await response.json() as any;
-      const text = data.content?.[0]?.text || '{}';
+      const text = data.choices?.[0]?.message?.content || '{}';
       const clean = text.replace(/```json|```/g, '').trim();
       const result = JSON.parse(clean);
 

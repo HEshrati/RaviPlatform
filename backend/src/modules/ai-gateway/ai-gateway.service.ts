@@ -13,7 +13,7 @@ export class AiGatewayService {
   private readonly model = 'gpt-4o-mini';
 
   constructor(private configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('ANTHROPIC_API_KEY') || '';
+    this.apiKey = this.configService.get<string>('AI_API_KEY') || this.configService.get<string>('ANTHROPIC_API_KEY') || '';
   }
 
   async chat(messages: Message[]): Promise<{ reply: string }> {

@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AiContent, ContentStatus } from './entities/ai-content.entity';
 
-const AI_API_URL = (process.env.ANTHROPIC_BASE_URL || 'https://api.gapgpt.app/v1') + '/messages';
-const AI_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+const AI_API_URL = (process.env.AI_BASE_URL || 'https://api.gapgpt.app/v1') + '/chat/completions';
+const AI_API_KEY = process.env.AI_API_KEY || process.env.ANTHROPIC_API_KEY || '';
+const AI_MODEL = process.env.AI_MODEL || 'gpt-4o-mini';
 
 const CONTENT_TOPICS = [
   'ارتباط موثر', 'سبک‌های دلبستگی', 'هوش هیجانی',
@@ -46,20 +47,28 @@ export class AiContentService {
 
   private async callAIAPI(topic: string): Promise<{ title: string; body: string; summary: string; tags: string[] }> {
     if (!AI_API_KEY) {
-      this.logger.warn('ANTHROPIC_API_KEY not set — returning placeholder content');
-      return { title: `${topic}: راهنمای عملی`, summary: `نگاهی به ${topic}`, body: `محتوا برای: ${topic}`, tags: [topic] };
-    }
-    if (!AI_API_KEY) {
-      this.logger.warn('ANTHROPIC_API_KEY not set — returning placeholder');
+      this.logger.warn('AI_API_KEY not set — returning placeholder content');
       return { title: `${topic}: راهنمای عملی`, summary: `نگاهی به ${topic}`, body: `محتوا برای: ${topic}`, tags: [topic] };
     }
     const response = await fetch(AI_API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': AI_API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929', max_tokens: 1500, messages: [{ role: 'user', content: `مقاله روانشناسانه درباره: ${topic}. فرمت JSON: {title, summary, body, tags}` }] }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${AI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: AI_MODEL,
+        max_tokens: 1500,
+        messages: [
+          {
+            role: 'user',
+            content: `مقاله روانشناسانه درباره: ${topic}. فرمت JSON: {title, summary, body, tags}`,
+          },
+        ],
+      }),
     });
     const data = await response.json() as any;
-    const text = data.content?.[0]?.text || '';
+    const text = data.choices?.[0]?.message?.content || '';
     try { return JSON.parse(text.trim()); }
     catch { return { title: `${topic}: راهنمای عملی`, summary: `نگاهی به ${topic}`, body: text, tags: [topic] }; }
   }
@@ -109,15 +118,24 @@ export class AiContentService {
   }
 
   async answerSupportQuestion(question: string): Promise<{ answer: string; isHandledByAI: boolean; telegramSupportLink?: string }> {
-    const FAQ_TOPICS = ['قوانین','ثبت‌نام','رزرو','پرداخت','لغو','گروه','تلگرام','پروفایل','امتیاز','رویداد'];
+    if (!AI_API_KEY) {
+      return { answer: 'سرویس هوش مصنوعی در حال حاضر در دسترس نیست.', isHandledByAI: false, telegramSupportLink: 'https://t.me/RaaviSupport' };
+    }
     try {
       const response = await fetch(AI_API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': AI_API_KEY, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929', max_tokens: 300, messages: [{ role: 'user', content: question }] }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: AI_MODEL,
+          max_tokens: 300,
+          messages: [{ role: 'user', content: question }],
+        }),
       });
       const data = await response.json() as any;
-      const answer = data.content?.[0]?.text || '';
+      const answer = data.choices?.[0]?.message?.content || '';
       if (answer.includes('نیاز به بررسی'))
         return { answer, isHandledByAI: false, telegramSupportLink: 'https://t.me/RaaviSupport' };
       return { answer, isHandledByAI: true };

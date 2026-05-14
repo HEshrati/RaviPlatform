@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SupportTicket, TicketStatus, TicketCategory } from './entities/support-ticket.entity';
 
-const AI_API_KEY = process.env.AI_API_KEY || 'sk-fRQfQLXc8pkuNIIf6eSokMD2KU1BdsLUXXj4gtv4yQLrIlxQ';
-const AI_API_URL = process.env.AI_API_URL || 'https://api.avalai.ir/v1';
+const AI_API_KEY = process.env.AI_API_KEY || process.env.ANTHROPIC_API_KEY || '';
+const AI_API_URL = process.env.AI_API_URL || 'https://api.gapgpt.app/v1';
 const TELEGRAM_SUPPORT_URL = process.env.TELEGRAM_SUPPORT_URL || 'https://t.me/ravi_support';
 
 const RAVI_FAQ_SYSTEM_PROMPT = `
