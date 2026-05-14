@@ -31,11 +31,13 @@ export default function ArticlesPage() {
   const [search, setSearch] = useState("");
   const todayLabel = new Date().toLocaleDateString("fa-IR", { day:"numeric", month:"long", year:"numeric" });
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
   useEffect(() => {
-    fetch("/api/content/articles")
+    fetch(`${API_URL}/api/content/articles?page=1&limit=50`)
       .then(r => r.ok ? r.json() : null)
       .then((res: any) => {
-        const data: Article[] = Array.isArray(res) ? res : (res?.data || res?.articles || []);
+        const data: Article[] = Array.isArray(res) ? res : (res?.data || res?.articles || res?.items || []);
         if (data?.length) setAllArticles(data);
       })
       .catch(()=>{})

@@ -33,6 +33,38 @@ export class MatchingController {
     return { success: true, userId, suspended: true };
   }
 
+  @Post('create-groups/:eventId')
+  async createGroups(
+    @Param('eventId') eventId: string,
+    @Body() body: { userIds?: string[]; groupSize?: number; eventType?: string },
+    @Req() req: any,
+  ) {
+    if (!isAdminUser(req.user)) throw new ForbiddenException('دسترسی ادمین لازم است');
+    const { userIds, groupSize = 5, eventType = 'mixed' } = body;
+
+    let resolvedUserIds = userIds;
+    if (!resolvedUserIds || resolvedUserIds.length === 0) {
+      const bookings = await this.bookingRepo.find({
+        where: { event_id: eventId, status: 'confirmed' },
+      });
+      resolvedUserIds = bookings.map((b) => b.user_id).filter(Boolean);
+    }
+
+    if (resolvedUserIds.length < 2) {
+      return { success: false, message: 'کاربران ثبت‌نام‌شده کافی نیست (حداقل ۲ نفر)' };
+    }
+
+    const groups = await this.matchingService.createSmartGroups(eventId, resolvedUserIds, groupSize, eventType);
+    this.logger.log(`Admin created ${groups.length} groups for event ${eventId}`);
+    return {
+      success: true,
+      eventId,
+      groups,
+      totalGroups: groups.length,
+      totalMatched: resolvedUserIds.length,
+    };
+  }
+
   @Post('merge-incomplete-groups/:eventId')
   async mergeIncompleteGroups(@Param('eventId') eventId: string, @Req() req: any) {
     if (!isAdminUser(req.user)) throw new ForbiddenException();
