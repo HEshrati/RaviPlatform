@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-raavi_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Q1FpBFqEwbrfFK4uVHQbDf7V3h6XaOiY}
+      POSTGRES_DB: ${POSTGRES_DB:-raavi_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # ✅ FIX: user اشتباه بود (postgres)، باید raavi_user باشه
+      # با user اشتباه healthcheck همیشه pass می‌کرد حتی اگه DB آماده نبود
+      test: ["CMD-SHELL", "pg_isready -U raavi_user -d raavi_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      # ✅ FIX: مسیر مطلق /backend اشتباه بود — باید نسبی باشه
+      context: .
+      dockerfile: Dockerfile
+    container_name: raavi-backend
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env.production
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: raavi_user
+      DB_PASSWORD: Q1FpBFqEwbrfFK4uVHQbDf7V3h6XaOiY
+      DB_DATABASE: raavi_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://raaviiplatform.com
+        NEXT_PUBLIC_SITE_URL: https://raaviiplatform.com
+        NEXT_PUBLIC_ENV: production
+    container_name: raavi-frontend
+    ports:
+      # ✅ FIX: پورت 3001 بود، nginx به 3000 وصل می‌شه — باید 3000:3000 باشه
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # ✅ FIX: برای دسترسی از خارج کانتینر در Next.js standalone
+      HOSTNAME: 0.0.0.0
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
