@@ -405,6 +405,24 @@ export default function HomePage() {
                   بیشتر بدانید
                 </Link>
               </div>
+
+              {/* دکمه اسکرول خودکار به تست روان — کنار دکمه‌های هیرو */}
+              <button
+                onClick={() => {
+                  const el = document.getElementById("ravi-tests");
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                }}
+                className="mt-3 flex items-center gap-2 px-4 py-2.5 rounded-2xl font-black text-sm transition-all active:scale-95 hover:opacity-90 max-w-sm"
+                style={{
+                  background: "rgba(255,107,0,0.08)",
+                  border: "1.5px solid rgba(255,107,0,0.2)",
+                  color: "#FF7A00",
+                }}
+              >
+                <Brain size={15} />
+                تست روان‌شناسی
+                <ChevronDown size={13} />
+              </button>
             </div>
 
             {/* تصویر هیرو — قلب (نه لامپ) */}
@@ -510,23 +528,6 @@ export default function HomePage() {
 
         <Footer />
       </div>
-
-      {/* ── دکمه اسکرول خودکار به تست روان ── */}
-      <button
-        onClick={() => {
-          const el = document.getElementById("ravi-tests");
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-        }}
-        className="fixed left-4 bottom-24 md:bottom-8 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl font-black text-white text-xs transition-all active:scale-95 hover:opacity-90 shadow-xl"
-        style={{
-          background: "linear-gradient(135deg, #FF6B00, #FF9A3C)",
-          boxShadow: "0 8px 28px rgba(255,107,0,0.35)",
-        }}
-      >
-        <Brain size={16} />
-        تست روان‌شناسی
-        <ChevronDown size={14} />
-      </button>
 
       <BottomNav />
     </>
